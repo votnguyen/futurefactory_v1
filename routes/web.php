@@ -94,9 +94,16 @@ Route::get('/schedules', function () {
         ];
     });
 });
+Route::middleware(['auth', 'role:planner'])->prefix('planner')->group(function () {
+    Route::get('/', [PlannerController::class, 'dashboard'])->name('planner.dashboard');
+    
+    Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
+    Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
+    Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
+    Route::post('/schedule', [PlannerController::class, 'store'])->name('planner.schedule.store');
+    Route::get('/planner/planning', [PlannerController::class, 'showPlanning'])->name('planner.planning');
+});
 
-
-Route::post('/planner/store', [PlannerController::class, 'store'])->name('planner.store');
 
 
 require __DIR__ . '/auth.php';

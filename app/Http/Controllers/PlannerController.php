@@ -12,92 +12,120 @@ use Illuminate\Support\Facades\DB;
 
 class PlannerController extends Controller
 {
-    // Dashboard: Haalt voertuigen op die in de 'concept' status staan
+    /**
+     * Toon het planner dashboard.
+     */
     public function dashboard()
     {
         $vehicles = Vehicle::where('status', 'concept')->get();
+
         return view('planner.dashboard', compact('vehicles'));
     }
 
-    // Index: Geeft alle voertuigen in de 'concept' status weer
+    /**
+     * Toon alle voertuigen met status 'concept'.
+     */
     public function index()
     {
-        $vehicles = Vehicle::where('status', 'concept')->get();
-        return view('planner.index', compact('vehicles'));
+        $vehicles = Vehicle::where('status', 'concept')
+            ->with(['modules', 'customer']) // eager loading
+            ->get();
+
+        return view('planner.planning.index', compact('vehicles'));
     }
 
-    // Store: Maakt een nieuw schema aan voor een voertuig met de geselecteerde modules
+    /**
+     * Toon de planningsgegevens voor een specifiek voertuig.
+     */
+    public function show(Vehicle $vehicle)
+    {
+        $vehicle->load(['modules', 'customer']);
+
+        return view('planner.planning.show', compact('vehicle'));
+    }
+
+    /**
+     * Sla een nieuw planningsschema op voor een voertuig.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'start_time' => 'required|date',
-            'modules' => 'required|array|min:1',
-            'modules.*' => 'exists:modules,id', // Zorg ervoor dat alle module-id's bestaan
+        $validated = $request->validate([
+            'vehicle_id'  => 'required|exists:vehicles,id',
+            'start_time'  => 'required|date',
+            'modules'     => 'required|array|min:1',
+            'modules.*'   => 'exists:modules,id',
         ]);
 
-        $vehicleId = (int) $request->input('vehicle_id');
-        $vehicle = Vehicle::findOrFail($vehicleId);
+        $vehicle = Vehicle::with('modules')->where('id', $validated['vehicle_id'])->firstOrFail();
         $robot = $this->determineRobot($vehicle);
+        $startTime = Carbon::parse($validated['start_time']);
 
-        // Begin transactie voor veiligere databasemodificaties
         DB::beginTransaction();
 
         try {
-            foreach ($request->modules as $moduleId) {
+            foreach ($validated['modules'] as $moduleId) {
                 $module = Module::findOrFail($moduleId);
 
-                // Parse en formatteer de start- en eindtijd
-                $startTime = Carbon::parse($request->start_time)->format('Y-m-d H:i:s');
-                $endTime = Carbon::parse($startTime)->addHours($module->assembly_time)->format('Y-m-d H:i:s');
+                $start = $startTime->copy();
+                $end = $start->copy()->addHours($module->assembly_time);
 
-                // Controleer of er al een schema bestaat voor het voertuig, module en tijd
-                $existingSchedule = Schedule::where('vehicle_id', $vehicle->id)
+                $conflict = Schedule::where('vehicle_id', $vehicle->id)
                     ->where('module_id', $module->id)
-                    ->where('start_time', $startTime)
-                    ->first();
+                    ->where('start_time', $start)
+                    ->exists();
 
-                if ($existingSchedule) {
-                    throw new \Exception("Er is al een schema voor de geselecteerde module op deze tijd.");
+                if ($conflict) {
+                    throw new \Exception("Module '{$module->name}' is al ingepland op dit tijdstip.");
                 }
 
-                // Maak het nieuwe schema aan
                 Schedule::create([
                     'vehicle_id' => $vehicle->id,
-                    'module_id' => $module->id,
-                    'robot_id' => $robot->id,
-                    'start_time' => $startTime,
-                    'end_time' => $endTime,
+                    'module_id'  => $module->id,
+                    'robot_id'   => $robot->id,
+                    'start_time' => $start,
+                    'end_time'   => $end,
                 ]);
             }
 
-            // Update de status van het voertuig naar 'in_productie'
             $vehicle->update(['status' => 'in_productie']);
-
             DB::commit();
 
-            return redirect()->route('planner.index')
-                ->with('success', 'Voertuig succesvol ingepland!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Voertuig succesvol ingepland!',
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Foutafhandeling
-            return redirect()->back()->with('error', 'Er is een fout opgetreden: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Fout bij inplannen: ' . $e->getMessage(),
+            ], 422);
         }
     }
 
-    // Bepaal de juiste robot op basis van het voertuigtype (chassis)
+    /**
+     * Bepaal welke robot verantwoordelijk is voor assemblage op basis van het voertuigtype.
+     */
     private function determineRobot(Vehicle $vehicle)
     {
         $chassis = $vehicle->modules()->where('type', 'chassis')->first();
-
         $voertuigType = $chassis->specifications['voertuig_type'] ?? null;
 
-        // Selecteer robot op basis van het voertuigtype
         return match ($voertuigType) {
             'step', 'fiets', 'scooter' => Robot::where('name', 'TwoWheels')->first(),
-            'vrachtwagen', 'bus' => Robot::where('name', 'HeavyD')->first(),
-            default => Robot::where('name', 'HydroBoy')->first(),
+            'vrachtwagen', 'bus'       => Robot::where('name', 'HeavyD')->first(),
+            default                    => Robot::where('name', 'HydroBoy')->first(),
         };
     }
+    public function showPlanning()
+{
+    $vehicles = Vehicle::with('customer')->get();
+    $scheduledEvents = Planning::all(); // Haal de geplande evenementen op
+
+    return view('planner.planning', compact('vehicles', 'scheduledEvents'));
+}
+
+
+    
 }

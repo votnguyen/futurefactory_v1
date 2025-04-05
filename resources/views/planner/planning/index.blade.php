@@ -11,11 +11,10 @@
             <div id="selectedTimeDisplay" class="mt-2 text-gray-700"></div>
         </div>
 
-        <!-- Voertuig Selectie -->
+        <!-- Voertuigplanning -->
         <div class="bg-white p-4 rounded-lg shadow">
             <h2 class="text-xl font-semibold mb-4">Plan nieuw voertuig</h2>
 
-            {{-- Feedback messages --}}
             <div id="formMessages" class="mb-4 hidden">
                 <div id="formSuccess" class="text-green-600 font-semibold"></div>
                 <div id="formErrors" class="text-red-600 font-semibold"></div>
@@ -25,29 +24,32 @@
                 @csrf
                 <input type="hidden" name="start_time" id="selectedSlot">
 
+                <!-- Voertuigselectie -->
                 <div class="mb-4">
                     <label class="block font-medium mb-2">Selecteer voertuig:</label>
                     <select name="vehicle_id" class="w-full p-2 border rounded" required>
                         <option value="">-- Kies een voertuig --</option>
                         @foreach($vehicles as $vehicle)
-                            <option value="{{ $vehicle->id }}">{{ $vehicle->name }} ({{ $vehicle->customer->name }})</option>
+                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
+                                {{ $vehicle->name }} ({{ $vehicle->customer->name }})
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
+                <!-- Modules -->
                 <div class="mb-4">
                     <label class="block font-medium mb-2">Selecteer modules:</label>
-                    <div class="space-y-2" id="moduleList">
-                        <!-- Dynamische Modules Weergave per Voertuig -->
+                    <div id="moduleList" class="space-y-2">
                         @foreach($vehicles as $vehicle)
-                            <div class="vehicle-modules" id="vehicle-{{ $vehicle->id }}" style="display:none;">
+                            <div class="vehicle-modules" id="vehicle-{{ $vehicle->id }}" style="{{ old('vehicle_id') == $vehicle->id ? 'display:block;' : 'display:none;' }}">
                                 @foreach($vehicle->modules as $module)
                                     <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer">
                                         <input type="checkbox" 
-                                               name="modules[]" 
-                                               value="{{ $module->id }}"
-                                               data-vehicle="{{ $vehicle->id }}"
-                                               class="vehicle-module mr-2">
+                                            name="modules[]" 
+                                            value="{{ $module->id }}" 
+                                            class="vehicle-module mr-2"
+                                            {{ in_array($module->id, old('modules', [])) ? 'checked' : '' }}>
                                         <span class="flex-1">{{ $module->name }} ({{ $module->type }})</span>
                                         <span class="text-sm text-gray-500">{{ $module->assembly_time }} uur</span>
                                     </label>
@@ -57,7 +59,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="bg-blue-500 text-black px-4 py-2 rounded w-full">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">
                     Inplannen
                 </button>
             </form>
@@ -65,21 +67,22 @@
     </div>
 </div>
 
-<!-- FullCalendar CSS & JS -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/nl.js'></script>
+<!-- Kalender scripts -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/nl.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let selectedSlotDate = null;
-    let tempEvent = null;
-
+document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
     const formMessages = document.getElementById('formMessages');
     const formSuccess = document.getElementById('formSuccess');
     const formErrors = document.getElementById('formErrors');
+    const planningForm = document.getElementById('planningForm');
+
+    let selectedSlotDate = null;
+    let tempEvent = null;
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
         locale: 'nl',
@@ -89,15 +92,15 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: '18:00:00',
         selectable: true,
         editable: false,
-        events: '/api/schedules',
-
-        eventDidMount: function(info) {
-            info.el.style.backgroundColor = '#3b82f6';
-            info.el.style.borderColor = '#2563eb';
-            info.el.style.color = 'white';
+        events: function(info, successCallback, failureCallback) {
+            // Haal de geplande evenementen op via een AJAX-aanroep
+            fetch('/get-scheduled-events') // Dit is een voorbeeldroute
+                .then(response => response.json())
+                .then(data => successCallback(data.events))
+                .catch(error => failureCallback(error));
         },
 
-        select: function(info) {
+        select(info) {
             selectedSlotDate = info.start;
 
             if (tempEvent) {
@@ -122,26 +125,24 @@ document.addEventListener('DOMContentLoaded', function() {
             })}`;
         },
 
-        eventClick: function(info) {
+        eventClick(info) {
             alert('Dit tijdslot is al bezet.');
-        },
+        }
     });
 
     calendar.render();
 
-    // Filter modules op voertuig selectie
-    document.querySelector('[name="vehicle_id"]').addEventListener('change', function() {
+    // Modules tonen op basis van voertuigkeuze
+    document.querySelector('[name="vehicle_id"]').addEventListener('change', function () {
         const vehicleId = this.value;
-        // Verberg alle module lijsten
         document.querySelectorAll('.vehicle-modules').forEach(el => el.style.display = 'none');
-        // Toon de geselecteerde voertuig modules
         if (vehicleId) {
             document.getElementById('vehicle-' + vehicleId).style.display = 'block';
         }
     });
 
-    // Formulier versturen
-    document.getElementById('planningForm').addEventListener('submit', async function(e) {
+    // Formulierverwerking
+    planningForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         if (!selectedSlotDate) {
@@ -165,15 +166,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 showFormMessage('Voertuig succesvol ingepland!', true);
-                resetTempEvent();
-                addConfirmedEvent(selectedSlotDate);
+                if (tempEvent) {
+                    calendar.getEventById('temp')?.remove();
+                    tempEvent = null;
+                }
+
+                calendar.refetchEvents();
                 this.reset();
-                selectedTimeDisplay.textContent = formatSelectedSlotDate(selectedSlotDate);
+                selectedTimeDisplay.textContent = '';
             } else {
-                handleFormErrors(data);
+                if (data.errors) {
+                    const errorMessages = Object.values(data.errors).flat().join('<br>');
+                    showFormMessage(errorMessages, false);
+                } else {
+                    showFormMessage(data.message || 'Er is een fout opgetreden bij het inplannen.', false);
+                }
             }
         } catch (error) {
-            handleError(error);
+            console.error('Fout bij verzenden formulier:', error);
+            showFormMessage('Onverwachte fout bij het inplannen. Zie console voor details.', false);
         }
     });
 
@@ -187,46 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             formErrors.innerHTML = message;
         }
-    }
-
-    function resetTempEvent() {
-        if (tempEvent) {
-            calendar.getEventById('temp')?.remove();
-            tempEvent = null;
-        }
-    }
-
-    function addConfirmedEvent(startDate) {
-        calendar.addEvent({
-            id: 'confirmed-' + Date.now(),
-            title: 'Ingepland voertuig',
-            start: startDate,
-            end: new Date(startDate.getTime() + 2 * 60 * 60 * 1000), // 2 uur
-            backgroundColor: '#93c5fd',
-            borderColor: '#3b82f6',
-            textColor: '#000'
-        });
-    }
-
-    function formatSelectedSlotDate(date) {
-        return date.toLocaleString('nl-NL', {
-            dateStyle: 'short',
-            timeStyle: 'short'
-        });
-    }
-
-    function handleFormErrors(data) {
-        const errorMessages = Object.values(data.errors).flat().join('<br>');
-        showFormMessage(errorMessages, false);
-    }
-
-    function handleError(error) {
-        console.error('Fout bij verzenden formulier:', error);
-        let message = 'Onverwachte fout bij het inplannen. Zie console voor details.';
-        if (error instanceof TypeError) {
-            message = 'Server niet bereikbaar of netwerkfout.';
-        }
-        showFormMessage(message, false);
     }
 });
 </script>

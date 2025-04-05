@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use app\Models\Robot;
+use App\Models\Robot;
+
 
 
 class RobotSeeder extends Seeder

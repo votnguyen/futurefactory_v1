@@ -12,6 +12,7 @@ use App\Http\Controllers\VehicleTypeController;
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -52,8 +53,8 @@ Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(f
 });
 
 Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
-    Route::get('/planning', [PlanningController::class, 'index'])->name('planner.index');
-    Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
-    Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
+    Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
+    Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
+    Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
 });
 require __DIR__.'/auth.php';

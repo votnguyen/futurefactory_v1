@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use App\Models\Robot;
 <<<<<<< HEAD
 use App\Models\Chassis;
@@ -14,6 +15,9 @@ use app\Models\Robot;
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======
 
+=======
+use app\Models\Robot;
+>>>>>>> parent of 9126aec (Planner controller etc.)
 
 >>>>>>> parent of 4f325ed (fucked up code now)
 

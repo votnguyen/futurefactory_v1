@@ -10,6 +10,10 @@ use App\Http\Controllers\VehicleAssemblyController;
 use App\Http\Controllers\VehicleTypeController;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of 9126aec (Planner controller etc.)
 Route::get('/', function () {
     return view('welcome');
 });
@@ -80,8 +84,14 @@ Route::get('/slots/available', function(Request $request) {
 });
 
 Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
+<<<<<<< HEAD
     Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
     Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
+=======
+    Route::get('/planning', [PlanningController::class, 'index'])->name('planner.index');
+    Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
+    Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
+>>>>>>> parent of 9126aec (Planner controller etc.)
 });
 
 Route::get('/schedules', function() {

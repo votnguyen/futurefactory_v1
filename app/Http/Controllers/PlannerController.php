@@ -3,23 +3,20 @@
 namespace App\Http\Controllers;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 use App\Models\Vehicle;
 use App\Models\Schedule;
 use App\Models\Robot;
 use App\Models\Module; // Vergeet dit niet!
+=======
+>>>>>>> parent of 9126aec (Planner controller etc.)
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
-class PlannerController extends Controller
-{
-    public function dashboard()
-    {
-        // Haal voertuigen op die in de 'concept' status staan
-        $vehicles = Vehicle::where('status', 'concept')->get();
-        
-        // Geef de $vehicles variabele door naar de view
-        return view('planner.dashboard', compact('vehicles'));
+class PlannerController extends Controller {
+    public function dashboard() {
+        return view('planner.dashboard');
     }
+<<<<<<< HEAD
 
     public function index()
     {
@@ -78,5 +75,8 @@ class PlannerController extends Controller {
     public function dashboard() {
         return view('planner.dashboard');
     }
+}
+>>>>>>> parent of 9126aec (Planner controller etc.)
+=======
 }
 >>>>>>> parent of 9126aec (Planner controller etc.)

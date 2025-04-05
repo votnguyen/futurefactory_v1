@@ -3,6 +3,7 @@
 @section('content')
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Planner Dashboard</h1>
+<<<<<<< HEAD
 
     <p class="mb-6">Welkom, {{ Auth::user()->name }}! Jij kunt productieplannen maken en de voortgang van voertuigen volgen.</p>
 
@@ -24,5 +25,8 @@
             Bekijk voertuigen en plan productie
         </a>
     </div>
+=======
+    <p>Welkom, {{ Auth::user()->name }}! Jij kunt productieplannen maken.</p>
+>>>>>>> parent of 9126aec (Planner controller etc.)
 </div>
 @endsection

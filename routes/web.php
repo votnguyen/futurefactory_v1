@@ -52,7 +52,6 @@ Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(f
     Route::get('/monteur/assembly', [VehicleAssemblyController::class, 'index'])->name('monteur.assembly.index');
 
 });
-<<<<<<< HEAD
 
 Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
     Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
@@ -60,48 +59,5 @@ Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function (
     Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
 });
 
-Route::get('/vehicle/{id}/robot', function($id) {
-    $vehicle = Vehicle::findOrFail($id);
-    return [
-        'robot_id' => $vehicle->robot->id,
-        'robot_name' => $vehicle->robot->name
-    ];
-});
 
-Route::get('/slots/available', function(Request $request) {
-    $robotId = $request->query('robot_id');
-    $start = Carbon::parse($request->query('start'));
-    $end = Carbon::parse($request->query('end'));
-
-    $conflicting = Schedule::where('robot_id', $robotId)
-        ->where(function($query) use ($start, $end) {
-            $query->whereBetween('start_time', [$start, $end])
-                  ->orWhereBetween('end_time', [$start, $end]);
-        })->exists();
-
-    return response()->json(!$conflicting);
-});
-
-Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
-    Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
-    Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
-});
-
-Route::get('/schedules', function() {
-    return Schedule::with(['vehicle', 'module', 'robot'])
-        ->get()
-        ->map(function($schedule) {
-            return [
-                'title' => $schedule->vehicle->name . ' - ' . $schedule->module->name,
-                'start' => $schedule->start_time->toIso8601String(),
-                'end' => $schedule->end_time->toIso8601String(),
-                'color' => '#3b82f6', // Vaste blauwe kleur
-                'extendedProps' => [
-                    'robot' => $schedule->robot->name
-                ]
-            ];
-        });
-});
-=======
->>>>>>> parent of 426174f (User story 3, Planner en robot)
 require __DIR__.'/auth.php';

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 /* Voeg toe aan resources/css/app.css */
-<<<<<<< HEAD
 [x-cloak] { display: none; }
 
 
@@ -48,6 +47,3 @@ input[type="checkbox"].vehicle-module:checked {
     cursor: not-allowed !important;
 }
 
-=======
-[x-cloak] { display: none; }
->>>>>>> parent of 426174f (User story 3, Planner en robot)

@@ -35,13 +35,10 @@ class Vehicle extends Model
         $this->total_assembly_time = $this->modules->sum('assembly_time');
         $this->save();
     }
-<<<<<<< HEAD
 
     public function schedules()
 {
     return $this->hasMany(Schedule::class);
 }
 
-=======
->>>>>>> parent of 426174f (User story 3, Planner en robot)
 }

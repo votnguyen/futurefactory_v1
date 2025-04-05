@@ -10,7 +10,6 @@ class DatabaseSeeder extends Seeder {
             RoleSeeder::class,
             UserSeeder::class,
             ModuleSeeder::class,
-            RobotSeeder::class,
         ]);
     }
 }

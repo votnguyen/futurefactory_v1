@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 use App\Models\Vehicle;
 use App\Models\Schedule;
 use App\Models\Robot;
 use App\Models\Module; // Vergeet dit niet!
+=======
+>>>>>>> parent of 9126aec (Planner controller etc.)
 =======
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======
@@ -19,6 +22,7 @@ class PlannerController extends Controller {
     public function dashboard() {
         return view('planner.dashboard');
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -79,6 +83,9 @@ class PlannerController extends Controller {
     public function dashboard() {
         return view('planner.dashboard');
     }
+}
+>>>>>>> parent of 9126aec (Planner controller etc.)
+=======
 }
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======

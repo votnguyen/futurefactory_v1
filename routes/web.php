@@ -14,6 +14,9 @@ use App\Http\Controllers\VehicleTypeController;
 =======
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 9126aec (Planner controller etc.)
+=======
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======
 >>>>>>> parent of 9126aec (Planner controller etc.)
@@ -62,6 +65,7 @@ Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function (
     Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
     Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
 <<<<<<< HEAD
+<<<<<<< HEAD
 });
 <<<<<<< HEAD
 
@@ -95,6 +99,8 @@ Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function (
     Route::get('/planning', [PlanningController::class, 'index'])->name('planner.index');
     Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
     Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
+>>>>>>> parent of 9126aec (Planner controller etc.)
+=======
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======
 >>>>>>> parent of 9126aec (Planner controller etc.)

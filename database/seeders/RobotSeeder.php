@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 use App\Models\Robot;
 <<<<<<< HEAD
 use App\Models\Chassis;
@@ -15,6 +16,9 @@ use app\Models\Robot;
 
 >>>>>>> parent of 9126aec (Planner controller etc.)
 =======
+=======
+use app\Models\Robot;
+>>>>>>> parent of 9126aec (Planner controller etc.)
 =======
 use app\Models\Robot;
 >>>>>>> parent of 9126aec (Planner controller etc.)

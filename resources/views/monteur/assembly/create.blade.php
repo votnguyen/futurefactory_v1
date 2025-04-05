@@ -58,7 +58,7 @@
                                             
                                             <div class="text-sm text-gray-700 mt-1 space-y-1">
                                                 <p>Kosten: €{{ number_format($module->cost, 2) }}</p>
-                                                <p>Montagetijd: {{ $module->assembly_time }} minuten</p>
+                                                <p>Montagetijd: {{ $module->assembly_time }} uur</p>
                                             </div>
 
                                             @if($module->specifications)
@@ -73,10 +73,10 @@
                                             @endif
 
                                             @if($module->image_path)
-                                                <img 
-                                                    src="{{ asset('storage/modules/' . $module->image_path) }}" 
-                                                    alt="{{ $module->name }}" 
-                                                    class="mt-3 h-32 w-32 object-contain rounded border transition-all duration-300 hover:scale-105">
+                                            <img 
+                                            src="{{ asset('storage/modules/' . $module->image_path) }}" 
+                                              alt="{{ $module->name }}" 
+                                             class="mt-3 h-48 w-48 object-contain rounded border transition-all duration-300 hover:scale-105">
                                             @endif
                                         </div>
                                     </div>

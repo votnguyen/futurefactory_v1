@@ -25,7 +25,7 @@
                             {{ $vehicle->name }} ({{ $vehicle->customer->name }})
                         </a>
                         <div class="text-sm text-gray-600">
-                            €{{ number_format($vehicle->total_cost, 2) }} | {{ $vehicle->total_assembly_time }} min
+                            €{{ number_format($vehicle->total_cost, 2) }} | {{ $vehicle->total_assembly_time }} uur
                         </div>
                     </li>
                     @endforeach

@@ -16,7 +16,7 @@
             </div>
             <div>
                 <h3 class="font-bold">Totale Montagetijd:</h3>
-                <p>{{ $vehicle->total_assembly_time }} minuten</p>
+                <p>{{ $vehicle->total_assembly_time }} uren</p>
             </div>
         </div>
 
@@ -31,11 +31,14 @@
                     </div>
                     <div class="text-right">
                         <p>€{{ number_format($module->cost, 2) }}</p>
-                        <p>{{ $module->assembly_time }} min</p>
+                        <p>{{ $module->assembly_time }} uur</p>
                     </div>
                 </div>
                 @if($module->image_path)
-                <img src="{{ asset('storage/' . $module->image_path) }}" alt="{{ $module->name }}" class="mt-2 h-32">
+                <img 
+    src="{{ asset('storage/modules/' . $module->image_path) }}" 
+    alt="{{ $module->name }}" 
+    class="mt-3 h-48 w-48 object-contain rounded border transition-all duration-300 hover:scale-105">
                 @endif
                 <div class="mt-2">
                     <h4 class="font-medium">Specificaties:</h4>

@@ -12,7 +12,6 @@ class ModuleSeeder extends Seeder
         $modules = [
 
             // --- CHASSIS MODULES ---
-            // Geschikt voor: Step (2 wielen)
             [
                 'name' => 'Step LightFrame',
                 'type' => 'chassis',
@@ -25,7 +24,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'chassis-step.png'
             ],
-            // Geschikt voor: Fiets (2 wielen)
             [
                 'name' => 'Fiets StandardFrame',
                 'type' => 'chassis',
@@ -38,7 +36,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'chassis-fiets.png'
             ],
-            // Geschikt voor: Scooter (2 wielen)
             [
                 'name' => 'Scooter ProFrame',
                 'type' => 'chassis',
@@ -51,7 +48,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'chassis-scooter.png'
             ],
-            // Geschikt voor: Personenauto (4 wielen)
             [
                 'name' => 'Nikinella Chassis',
                 'type' => 'chassis',
@@ -64,7 +60,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'chassis-sport.png'
             ],
-            // Geschikt voor: Vrachtwagen (6 wielen)
             [
                 'name' => 'Frame TGP India',
                 'type' => 'chassis',
@@ -77,7 +72,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'chassis-suv.png'
             ],
-            // Geschikt voor: Bus (6 wielen)
             [
                 'name' => 'Bus MegaFrame',
                 'type' => 'chassis',
@@ -92,122 +86,117 @@ class ModuleSeeder extends Seeder
             ],
 
             // --- AANDRIJVING MODULES ---
-             // --- ELEKTRISCHE AANDRIJVINGEN ---
-             [
-                'name' => 'E-Step Motor 1.0',
+            [
+                'name' => 'E-Step Motor 3pk',
                 'type' => 'aandrijving',
                 'cost' => 8000,
                 'assembly_time' => 1,
                 'specifications' => [
                     'soort' => 'elektriciteit',
-                    'vermogen' => '2.5 kW',
+                    'vermogen' => '3pk',
                     'compatibele_voertuigen' => ['Step']
                 ],
                 'image_path' => 'aandrijving-step-elektrisch.png'
             ],
             [
-                'name' => 'E-Bike Power+',
+                'name' => 'E-Bike Power+ 7pk',
                 'type' => 'aandrijving',
                 'cost' => 12000,
                 'assembly_time' => 1,
                 'specifications' => [
                     'soort' => 'elektriciteit',
-                    'vermogen' => '5 kW',
+                    'vermogen' => '7pk',
                     'compatibele_voertuigen' => ['Fiets', 'Scooter']
                 ],
                 'image_path' => 'aandrijving-ebike.png'
             ],
             [
-                'name' => 'E-Auto 150kW',
+                'name' => 'E-Auto 204pk',
                 'type' => 'aandrijving',
                 'cost' => 25000,
                 'assembly_time' => 2,
                 'specifications' => [
-                    'soort' => 'elektriciteit',
-                    'vermogen' => '150 kW (204 pk)',
+                    'soort' => 'waterstof',
+                    'vermogen' => '204pk',
                     'compatibele_voertuigen' => ['Personenauto']
                 ],
                 'image_path' => 'aandrijving-elektrisch-auto.png'
             ],
             [
-                'name' => 'E-Bus 300kW',
+                'name' => 'E-Bus 408pk',
                 'type' => 'aandrijving',
                 'cost' => 60000,
                 'assembly_time' => 3,
                 'specifications' => [
                     'soort' => 'elektriciteit',
-                    'vermogen' => '300 kW (408 pk)',
+                    'vermogen' => '408pk',
                     'compatibele_voertuigen' => ['Bus']
                 ],
                 'image_path' => 'aandrijving-elektrisch-bus.png'
             ],
-
-            // --- WATERSTOF AANDRIJVINGEN ---
             [
-                'name' => 'H2-Scooter Cell',
+                'name' => 'waterstof138',
                 'type' => 'aandrijving',
-                'cost' => 15000,
+                'cost' => 32000,
                 'assembly_time' => 2,
                 'specifications' => [
                     'soort' => 'waterstof',
-                    'vermogen' => '10 kW (13 pk)',
-                    'compatibele_voertuigen' => ['Scooter']
-                ],
-                'image_path' => 'aandrijving-waterstof-scooter.png'
-            ],
-            [
-                'name' => 'H2-Auto Pro',
-                'type' => 'aandrijving',
-                'cost' => 35000,
-                'assembly_time' => 2,
-                'specifications' => [
-                    'soort' => 'waterstof',
-                    'vermogen' => '180 pk',
+                    'vermogen' => '138pk',
                     'compatibele_voertuigen' => ['Personenauto']
                 ],
                 'image_path' => 'aandrijving-waterstof-auto.png'
             ],
             [
-                'name' => 'H2-Vracht Xtreme',
+                'name' => 'H2-Scooter Cell 13pk',
+                'type' => 'aandrijving',
+                'cost' => 15000,
+                'assembly_time' => 2,
+                'specifications' => [
+                    'soort' => 'waterstof',
+                    'vermogen' => '13pk',
+                    'compatibele_voertuigen' => ['Scooter']
+                ],
+                'image_path' => 'aandrijving-waterstof-scooter.png'
+            ],
+            [
+                'name' => 'H2-Vracht Xtreme 400pk',
                 'type' => 'aandrijving',
                 'cost' => 75000,
                 'assembly_time' => 4,
                 'specifications' => [
                     'soort' => 'waterstof',
-                    'vermogen' => '400 pk',
+                    'vermogen' => '400pk',
                     'compatibele_voertuigen' => ['Vrachtwagen']
                 ],
                 'image_path' => 'aandrijving-waterstof-vracht.png'
             ],
             [
-                'name' => 'H2-Bus Mega',
+                'name' => 'H2-Bus Mega 350pk',
                 'type' => 'aandrijving',
                 'cost' => 80000,
                 'assembly_time' => 4,
                 'specifications' => [
                     'soort' => 'waterstof',
-                    'vermogen' => '350 pk',
+                    'vermogen' => '350pk',
                     'compatibele_voertuigen' => ['Bus']
                 ],
                 'image_path' => 'aandrijving-waterstof-bus.png'
             ],
 
-            // --- HYBRIDE AANDRIJVINGEN (Optioneel) ---
-            [
-                'name' => 'Hybrid-Eco 200',
-                'type' => 'aandrijving',
-                'cost' => 30000,
-                'assembly_time' => 3,
-                'specifications' => [
-                    'soort' => 'hybride',
-                    'vermogen' => '150 pk (elektrisch) + 100 pk (waterstof)',
-                    'compatibele_voertuigen' => ['Personenauto', 'Bus']
-                ],
-                'image_path' => 'aandrijving-hybride.png'
-            ],
-
             // --- WIELEN MODULES ---
-
+            [
+                'name' => 'Z15-4',
+                'type' => 'wielen',
+                'cost' => 1200,
+                'assembly_time' => 1,
+                'specifications' => [
+                    'band_type' => 'zomerband',
+                    'diameter' => '15 inch',
+                    'aantal' => 4,
+                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India', 'Bus MegaFrame']
+                ],
+                'image_path' => 'wielen-zomer.png'
+            ],
             [
                 'name' => 'Auto Premium 18"',
                 'type' => 'wielen',
@@ -217,11 +206,10 @@ class ModuleSeeder extends Seeder
                     'band_type' => 'all-season',
                     'diameter' => '18 inch',
                     'aantal' => 4,
-                    'geschikt_voor' => ['Nikinella Chassis', 'Auto Luxe Chassis']
+                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India', 'Bus MegaFrame']
                 ],
                 'image_path' => 'wielen-auto-premium.png'
             ],
-            // Vrachtwagen (6 wielen)
             [
                 'name' => 'Vrachtwagen Banden 22"',
                 'type' => 'wielen',
@@ -231,11 +219,10 @@ class ModuleSeeder extends Seeder
                     'band_type' => 'winter',
                     'diameter' => '22 inch',
                     'aantal' => 6,
-                    'geschikt_voor' => ['Frame TGP India', 'Vrachtwagen Chassis']
+                    'geschikt_voor' => ['Frame TGP India']
                 ],
                 'image_path' => 'wielen-vrachtwagen.png'
             ],
-            // Bus (6 wielen)
             [
                 'name' => 'Bus Banden 20"',
                 'type' => 'wielen',
@@ -249,8 +236,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'wielen-bus.png'
             ],
-
-            // Compatibel met: Step LightFrame
             [
                 'name' => 'Step Wielen 10"',
                 'type' => 'wielen',
@@ -264,7 +249,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'wielen-step.png'
             ],
-            // Compatibel met: Fiets StandardFrame
             [
                 'name' => 'Fiets Wielen 28"',
                 'type' => 'wielen',
@@ -278,7 +262,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'wielen-fiets.png'
             ],
-            // Compatibel met: Scooter ProFrame
             [
                 'name' => 'Scooter Wielen 12"',
                 'type' => 'wielen',
@@ -294,8 +277,18 @@ class ModuleSeeder extends Seeder
             ],
 
             // --- STUUR MODULES ---
-             // Auto
-             [
+            [
+                'name' => 'schapenstadium',
+                'type' => 'stuur',
+                'cost' => 400,
+                'assembly_time' => 1,
+                'specifications' => [
+                    'speciale_aanpassingen' => 'schapenvacht',
+                    'vorm' => 'stadium'
+                ],
+                'image_path' => 'stuur-schapenstadium.png'
+            ],
+            [
                 'name' => 'Auto Sportstuur',
                 'type' => 'stuur',
                 'cost' => 600,
@@ -306,7 +299,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stuur-auto-sport.png'
             ],
-            // Vrachtwagen
             [
                 'name' => 'Vrachtwagen Stuur',
                 'type' => 'stuur',
@@ -318,7 +310,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stuur-vrachtwagen.png'
             ],
-            // Bus
             [
                 'name' => 'Bus Stuur',
                 'type' => 'stuur',
@@ -330,8 +321,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stuur-bus.png'
             ],
-            
-            // Geschikt voor: Step/Scooter
             [
                 'name' => 'Step Stuur',
                 'type' => 'stuur',
@@ -343,7 +332,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stuur-step.png'
             ],
-            // Geschikt voor: Bus/Vrachtwagen
             [
                 'name' => 'Heavy Duty Stuur',
                 'type' => 'stuur',
@@ -357,8 +345,18 @@ class ModuleSeeder extends Seeder
             ],
 
             // --- STOELEN/ZADEL MODULES ---
-               // Auto
-               [
+            [
+                'name' => 'Luxe Stoelenset',
+                'type' => 'stoelen',
+                'cost' => 1600,
+                'assembly_time' => 1,
+                'specifications' => [
+                    'aantal' => 5,
+                    'stoffering' => 'leer'
+                ],
+                'image_path' => 'stoelen-luxe.png'
+            ],
+            [
                 'name' => 'Auto Stoelen Sport',
                 'type' => 'stoelen',
                 'cost' => 2500,
@@ -369,7 +367,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stoelen-auto-sport.png'
             ],
-            // Vrachtwagen
             [
                 'name' => 'Vrachtwagen Stoel',
                 'type' => 'stoelen',
@@ -381,7 +378,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stoelen-vrachtwagen.png'
             ],
-            // Bus
             [
                 'name' => 'Bus Stoelen Set',
                 'type' => 'stoelen',
@@ -393,8 +389,6 @@ class ModuleSeeder extends Seeder
                 ],
                 'image_path' => 'stoelen-bus.png'
             ],
-
-            // Optioneel voor Step/Fiets
             [
                 'name' => 'Fiets Zadel',
                 'type' => 'stoelen',
@@ -405,18 +399,6 @@ class ModuleSeeder extends Seeder
                     'stoffering' => 'kunstleer'
                 ],
                 'image_path' => 'zadel-fiets.png'
-            ],
-            // Verplicht voor Personenauto/Bus
-            [
-                'name' => 'Luxe Stoelenset',
-                'type' => 'stoelen',
-                'cost' => 3000,
-                'assembly_time' => 2,
-                'specifications' => [
-                    'aantal' => 5,
-                    'stoffering' => 'leer'
-                ],
-                'image_path' => 'stoelen-luxe.png'
             ]
         ];
 

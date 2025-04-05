@@ -21,7 +21,7 @@
 
     <!-- Button voor het plannen van productie -->
     <div>
-        <a href="{{ route('planner.index') }}" class="inline-block bg-blue-500 text-black px-6 py-2 rounded-md shadow-md hover:bg-black-600">
+        <a href="{{ route('planner.index') }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600">
             Bekijk voertuigen en plan productie
         </a>
     </div>

@@ -16,7 +16,6 @@ Route::get('/schedules', function () {
             'color' => $schedule->robot->color, // Toegevoegd: kleurveld voor robot
         ];
     });
-    
 
     // Retourneer een gestructureerde JSON response
     return response()->json($transformedSchedules);

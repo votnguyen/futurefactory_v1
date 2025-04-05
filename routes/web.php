@@ -8,9 +8,6 @@ use App\Http\Controllers\KlantController;
 use App\Http\Controllers\InkoperController;
 use App\Http\Controllers\VehicleAssemblyController;
 use App\Http\Controllers\VehicleTypeController;
-use App\Models\Vehicle;
-use Carbon\Carbon;
-    
 
 
 Route::get('/', function () {
@@ -58,6 +55,7 @@ Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function (
     Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
     Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
 });
+<<<<<<< HEAD
 
 Route::get('/vehicle/{id}/robot', function($id) {
     $vehicle = Vehicle::findOrFail($id);
@@ -103,4 +101,6 @@ Route::get('/schedules', function() {
 });
 =======
 >>>>>>> parent of 426174f (User story 3, Planner en robot)
+=======
+>>>>>>> parent of 4f325ed (fucked up code now)
 require __DIR__.'/auth.php';

@@ -9,13 +9,10 @@ class Robot extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'chassis'];
-
+    protected $fillable = ['name', 'description'];
     
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
-
-    
 }

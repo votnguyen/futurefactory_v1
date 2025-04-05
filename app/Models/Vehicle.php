@@ -41,7 +41,10 @@ class Vehicle extends Model
 {
     return $this->hasMany(Schedule::class);
 }
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of 426174f (User story 3, Planner en robot)
+=======
+>>>>>>> parent of 4f325ed (fucked up code now)
 }

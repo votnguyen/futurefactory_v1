@@ -1,3 +1,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Voeg toe aan resources/css/app.css */
+[x-cloak] { display: none; }

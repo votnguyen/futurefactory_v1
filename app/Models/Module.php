@@ -15,7 +15,9 @@ class Module extends Model
     ];
 
     protected $casts = [
-        'specifications' => 'array'
+        'specifications' => 'array',
+    'compatible_chassis' => 'array' // Voor wielcompatibiliteit
+        
     ];
 
     public function vehicles()

@@ -37,8 +37,13 @@ class Vehicle extends Model
     }
 
     public function schedules()
-{
-    return $this->hasMany(Schedule::class);
-}
+    {
+        return $this->hasMany(Schedule::class);
+    }
+    
+    public function getTypeAttribute()
+    {
+        return $this->modules->where('type', 'chassis')->first()->specifications['voertuig_type'] ?? 'onbekend';
+    }
 
 }

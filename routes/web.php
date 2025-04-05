@@ -7,12 +7,10 @@ use App\Http\Controllers\PlannerController;
 use App\Http\Controllers\KlantController;
 use App\Http\Controllers\InkoperController;
 use App\Http\Controllers\VehicleAssemblyController;
-use App\Http\Controllers\VehicleType;
 use App\Http\Controllers\VehicleTypeController;
 use App\Models\Vehicle;
 use Carbon\Carbon;
     
-
 
 
 
@@ -54,6 +52,7 @@ Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(f
     Route::get('/monteur/assembly', [VehicleAssemblyController::class, 'index'])->name('monteur.assembly.index');
 
 });
+<<<<<<< HEAD
 
 Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
     Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
@@ -103,4 +102,6 @@ Route::get('/schedules', function() {
             ];
         });
 });
+=======
+>>>>>>> parent of 426174f (User story 3, Planner en robot)
 require __DIR__.'/auth.php';

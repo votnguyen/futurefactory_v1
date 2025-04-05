@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Module;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 
@@ -13,44 +12,59 @@ class VehicleAssemblyController extends Controller
 {
     public function create()
     {
-        // Groepeer modules per type zodat je ze apart kunt tonen (bv. chassis, aandrijving, enz.)
+        // Haal alle modules op en groepeer ze per type (bv. chassis, aandrijving, etc.)
         $modules = Module::all()->groupBy('type');
-    $customers = User::whereHas('roles', function($query) {
-        $query->where('name', 'klant');
-    })->get();
+        
+        // Haal de klanten op die de rol 'klant' hebben
+        $customers = User::whereHas('roles', function($query) {
+            $query->where('name', 'klant');
+        })->get();
 
-    return view('monteur.assembly.create', compact('modules', 'customers'));
-}
+        return view('monteur.assembly.create', compact('modules', 'customers'));
+    }
+
     public function store(Request $request)
     {
-        // Valideer de inputs
+        // Valideer de vereiste invoervelden en individuele module velden
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'customer_id' => 'required|exists:users,id',
-            'modules' => 'required|array|min:1',
-            'modules.*' => 'exists:modules,id'
+            'name'         => 'required|string|max:255',
+            'customer_id'  => 'required|exists:users,id',
+            'chassis'      => 'required|exists:modules,id',
+            'aandrijving'  => 'required|exists:modules,id',
+            'wielen'       => 'required|exists:modules,id',
+            'stuur'        => 'required|exists:modules,id',
+            'stoelen'      => 'nullable|exists:modules,id'
         ]);
 
-        // Laad de geselecteerde modules
-        $selectedModules = Module::whereIn('id', $validated['modules'])->get();
+        // Combineer de module IDs in een array (filter eventuele null-waarden eruit)
+        $moduleIds = array_filter([
+            $validated['chassis'],
+            $validated['aandrijving'],
+            $validated['wielen'],
+            $validated['stuur'],
+            $validated['stoelen'] ?? null,
+        ]);
 
-        // Extra validatie: check of de selectie voldoet aan eisen (zoals 1 chassis)
+        // Haal de geselecteerde modules op
+        $selectedModules = Module::findMany($moduleIds);
+
+        // Extra validatie: controleer of de vereiste modules aanwezig zijn en compatibel zijn
         $this->validateModuleCompatibility($selectedModules);
 
-        // Bereken totalen
+        // Bereken de totalen voor kosten en assembly time
         $totalCost = $selectedModules->sum('cost');
         $totalTime = $selectedModules->sum('assembly_time');
 
-        // Maak voertuig aan
+        // Maak het voertuig aan in de database
         $vehicle = Vehicle::create([
-            'name' => $validated['name'],
-            'user_id' => $validated['customer_id'],
-            'status' => 'concept',
-            'total_cost' => $totalCost,
-            'total_assembly_time' => $totalTime,
+            'name'                  => $validated['name'],
+            'user_id'               => $validated['customer_id'],
+            'status'                => 'concept',
+            'total_cost'            => $totalCost,
+            'total_assembly_time'   => $totalTime,
         ]);
 
-        // Koppel modules in montagevolgorde (eenvoudig oplopend)
+        // Koppel de modules aan het voertuig in oplopende montagevolgorde
         $order = 1;
         foreach ($selectedModules as $module) {
             $vehicle->modules()->attach($module->id, ['assembly_order' => $order++]);
@@ -71,55 +85,35 @@ class VehicleAssemblyController extends Controller
         return view('monteur.assembly.index', compact('vehicles'));
     }
 
+    /**
+     * Controleer of de geselecteerde modules aan de vereiste criteria voldoen.
+     *
+     * @param \Illuminate\Support\Collection $modules
+     * @throws \Illuminate\Validation\ValidationException
+     */
     private function validateModuleCompatibility($modules)
-    
     {
-
-        $chassis = $modules->where('type', 'chassis')->first();
-        $wheels = $modules->where('type', 'wielen');
-
-          // Check wielcompatibiliteit
-         foreach ($wheels as $wheel) {
-        if (!in_array($chassis->id, $wheel->compatible_chassis)) {
-            throw ValidationException::withMessages([
-                'wielen' => 'Deze wielen zijn niet compatibel met het geselecteerde chassis'
-            ]);
-        }
-    }
-        // Controleer op exact één chassis
-        if ($modules->where('type', 'chassis')->count() !== 1) {
-            throw ValidationException::withMessages([
-                'modules' => 'Selecteer precies één chassis.'
-            ]);
-        }
-
-        // Controleer op minstens één aandrijving
-        if ($modules->where('type', 'aandrijving')->count() < 1) {
-            throw ValidationException::withMessages([
-                'modules' => 'Selecteer minstens één aandrijving.'
-            ]);
-        }
-
-        // Controleer of wielen compatibel zijn met het gekozen chassis
-        $chassis = $modules->where('type', 'chassis')->first();
-        $wheels = $modules->where('type', 'wielen');
-
-        foreach ($wheels as $wheel) {
-            $compatible = $wheel->specifications['compatible_chassis'] ?? [];
-            if (!in_array($chassis->name, $compatible)) {
+        // Controleer of alle verplichte componenten aanwezig zijn
+        $requiredTypes = ['chassis', 'aandrijving', 'wielen', 'stuur'];
+        foreach ($requiredTypes as $type) {
+            if ($modules->where('type', $type)->count() < 1) {
                 throw ValidationException::withMessages([
-                    'modules' => "Wielen '{$wheel->name}' zijn niet compatibel met chassis '{$chassis->name}'."
+                    $type => "Selecteer een $type."
                 ]);
             }
         }
 
-        
+        // Controleer de compatibiliteit van wielen met het gekozen chassis
+        $chassis = $modules->where('type', 'chassis')->first();
+        $wheels = $modules->where('type', 'wielen');
 
-        // Extra checks (optioneel):
-        // - stuur aanwezig
-        // - minimum aantal stoelen?
-        // - validatie voor afmetingen, etc.
-
-        
+        foreach ($wheels as $wheel) {
+            $compatibleChassis = $wheel->specifications['geschikt_voor'] ?? [];
+            if (!in_array($chassis->name, $compatibleChassis)) {
+                throw ValidationException::withMessages([
+                    'wielen' => "Wielen '{$wheel->name}' passen niet bij chassis '{$chassis->name}'."
+                ]);
+            }
+        }
     }
 }

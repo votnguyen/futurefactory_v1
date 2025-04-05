@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if($errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="container mx-auto py-6 px-4">
     <h1 class="text-2xl font-bold mb-6">Nieuw Voertuig Samenstellen</h1>
 
@@ -10,13 +21,13 @@
         <!-- Basis informatie -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-                <label class="block text-gray-700 font-bold mb-2">Voertuignaam:</label>
-                <input type="text" name="name" required 
+                <label class="block text-gray-700 font-bold mb-2" for="name">Voertuignaam:</label>
+                <input type="text" name="name" id="name" required 
                     class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-                <label class="block text-gray-700 font-bold mb-2">Klant:</label>
-                <select name="customer_id" required class="w-full p-2 border rounded">
+                <label class="block text-gray-700 font-bold mb-2" for="customer_id">Klant:</label>
+                <select name="customer_id" id="customer_id" required class="w-full p-2 border rounded">
                     @foreach($customers as $customer)
                         <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                     @endforeach
@@ -41,7 +52,7 @@
                                             value="{{ $module->id }}"
                                             class="mt-1"
                                             @if($type !== 'stoelen') required @endif
-                                        >
+                                            aria-label="{{ $module->name }}">
                                         <div class="flex-1">
                                             <h3 class="font-semibold text-lg">{{ $module->name }}</h3>
                                             
@@ -62,13 +73,10 @@
                                             @endif
 
                                             @if($module->image_path)
-                                            @if($module->image_path)
                                                 <img 
-                                                src="{{ asset('storage/modules/' . $module->image_path) }}" 
-                                                alt="{{ $module->name }}" 
-                                                 class="mt-3 h-32 w-32 object-contain rounded border">
-                                                @endif
-
+                                                    src="{{ asset('storage/modules/' . $module->image_path) }}" 
+                                                    alt="{{ $module->name }}" 
+                                                    class="mt-3 h-32 w-32 object-contain rounded border transition-all duration-300 hover:scale-105">
                                             @endif
                                         </div>
                                     </div>
@@ -83,10 +91,11 @@
         </div>
 
         <div class="mt-8">
-            <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition duration-200">
+            <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-black font-bold py-2 px-6 rounded transition duration-200">
                 Voertuig Opslaan
             </button>
         </div>
     </form>
 </div>
+
 @endsection

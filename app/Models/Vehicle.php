@@ -10,17 +10,20 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'user_id', 'total_cost', 
-        'total_assembly_time', 'status'
+        'name',
+        'user_id',
+        'total_cost',
+        'total_assembly_time',
+        'status'
     ];
 
+    
     public function modules()
     {
-        return $this->belongsToMany(Module::class)
-                    ->withPivot('assembly_order')
-                    ->orderBy('assembly_order');
+    return $this->belongsToMany(Module::class)
+                ->withPivot('assembly_order')
+                ->orderBy('assembly_order');
     }
-
     public function customer()
     {
         return $this->belongsTo(User::class, 'user_id');

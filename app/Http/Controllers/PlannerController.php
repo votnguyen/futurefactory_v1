@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Models\Vehicle;
 use App\Models\Schedule;
 use App\Models\Robot;
@@ -121,3 +122,12 @@ class PlannerController extends Controller
 }
 
 }
+=======
+use Illuminate\Http\Request;
+
+class PlannerController extends Controller {
+    public function dashboard() {
+        return view('planner.dashboard');
+    }
+}
+>>>>>>> parent of 9126aec (Planner controller etc.)

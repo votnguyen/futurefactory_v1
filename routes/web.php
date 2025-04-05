@@ -13,7 +13,6 @@ use Carbon\Carbon;
     
 
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -55,9 +54,9 @@ Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(f
 <<<<<<< HEAD
 
 Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
-    Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
-    Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
-    Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
+    Route::get('/planning', [PlanningController::class, 'index'])->name('planner.index');
+    Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
+    Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
 });
 
 Route::get('/vehicle/{id}/robot', function($id) {

@@ -3,8 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+<<<<<<< HEAD
 use App\Models\Robot;
 use App\Models\Chassis;
+=======
+use app\Models\Robot;
+
+>>>>>>> parent of 9126aec (Planner controller etc.)
 
 class RobotSeeder extends Seeder
 {

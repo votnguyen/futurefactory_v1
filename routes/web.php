@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\{Vehicle, Schedule};
+use App\Models\{Vehicle, Schedule}; // Gebruik Schedule in plaats van Planning
 use App\Http\Controllers\{
     ProfileController,
     MonteurController,
@@ -44,6 +44,7 @@ Route::middleware(['auth', 'role:planner'])->prefix('planner')->group(function (
     Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
     Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
     Route::post('/schedule', [PlannerController::class, 'store'])->name('planner.schedule.store');
+    Route::get('/planner/planning', [PlannerController::class, 'showPlanning'])->name('planner.planning');
 });
 
 // Klant
@@ -94,16 +95,19 @@ Route::get('/schedules', function () {
         ];
     });
 });
-Route::middleware(['auth', 'role:planner'])->prefix('planner')->group(function () {
-    Route::get('/', [PlannerController::class, 'dashboard'])->name('planner.dashboard');
-    
-    Route::get('/planning', [PlannerController::class, 'index'])->name('planner.index');
-    Route::post('/planning', [PlannerController::class, 'store'])->name('planner.store');
-    Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
-    Route::post('/schedule', [PlannerController::class, 'store'])->name('planner.schedule.store');
-    Route::get('/planner/planning', [PlannerController::class, 'showPlanning'])->name('planner.planning');
+
+// Eventen ophalen voor de kalender
+Route::get('/get-scheduled-events', function() {
+    $events = Schedule::all();  // Hier gebruiken we Schedule in plaats van Planning
+    return response()->json([
+        'events' => $events->map(function($event) {
+            return [
+                'title' => $event->vehicle->name,
+                'start' => $event->start_time,
+                'end' => $event->end_time,
+            ];
+        }),
+    ]);
 });
-
-
 
 require __DIR__ . '/auth.php';

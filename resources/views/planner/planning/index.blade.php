@@ -30,7 +30,7 @@
                     <select name="vehicle_id" class="w-full p-2 border rounded" required>
                         <option value="">-- Kies een voertuig --</option>
                         @foreach($vehicles as $vehicle)
-                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
+                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }} data-vehicle-name="{{ $vehicle->name }}">
                                 {{ $vehicle->name }} ({{ $vehicle->customer->name }})
                             </option>
                         @endforeach
@@ -172,6 +172,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 calendar.refetchEvents();
+
+                // Verwijder het geselecteerde voertuig uit de dropdownlijst
+                const vehicleId = formData.get('vehicle_id');
+                document.querySelector(`option[value="${vehicleId}"]`).remove();
+
+                // Reset formulier en UI-elementen
                 this.reset();
                 selectedTimeDisplay.textContent = '';
             } else {

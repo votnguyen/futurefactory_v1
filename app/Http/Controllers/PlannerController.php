@@ -37,47 +37,49 @@ class PlannerController extends Controller
     /**
      * Toon de planningsgegevens voor een specifiek voertuig.
      */
-    public function show(Vehicle $vehicle)
-    {
-        $vehicle->load(['modules', 'customer']);
-
-        return view('planner.planning.show', compact('vehicle'));
-    }
-
-    /**
-     * Sla een nieuw planningsschema op voor een voertuig.
-     */
     public function store(Request $request)
     {
+        // Validatie van de ingediende gegevens
         $validated = $request->validate([
-            'vehicle_id'  => 'required|exists:vehicles,id',
-            'start_time'  => 'required|date',
-            'modules'     => 'required|array|min:1',
-            'modules.*'   => 'exists:modules,id',
+            'vehicle_id'  => 'required|exists:vehicles,id',   // Voertuig moet bestaan
+            'start_time'  => 'required|date',                 // Starttijd moet een geldige datum zijn
+            'modules'     => 'required|array|min:1',           // Er moet minimaal 1 module worden geselecteerd
+            'modules.*'   => 'exists:modules,id',              // Elke geselecteerde module moet bestaan
         ]);
-
-        $vehicle = Vehicle::with('modules')->where('id', $validated['vehicle_id'])->firstOrFail();
+    
+        // Haal het voertuig op en laadt de modules
+        $vehicle = Vehicle::with('modules')->findOrFail($validated['vehicle_id']);
+        
+        // Bepaal welke robot gebruikt moet worden voor dit voertuig
         $robot = $this->determineRobot($vehicle);
+    
+        // Zet de starttijd om naar een Carbon instance
         $startTime = Carbon::parse($validated['start_time']);
-
+    
+        // Begin de database transactie
         DB::beginTransaction();
-
+    
         try {
+            // Loop door de geselecteerde modules en plan ze in
             foreach ($validated['modules'] as $moduleId) {
                 $module = Module::findOrFail($moduleId);
-
+    
+                // Bepaal de start- en eindtijd voor de module
                 $start = $startTime->copy();
                 $end = $start->copy()->addHours($module->assembly_time);
-
+    
+                // Controleer of er geen conflict is voor dit voertuig, deze module, en dit tijdslot
                 $conflict = Schedule::where('vehicle_id', $vehicle->id)
                     ->where('module_id', $module->id)
                     ->where('start_time', $start)
                     ->exists();
-
+    
+                // Als er een conflict is, gooi een fout
                 if ($conflict) {
                     throw new \Exception("Module '{$module->name}' is al ingepland op dit tijdstip.");
                 }
-
+    
+                // Maak een nieuw schema voor de module
                 Schedule::create([
                     'vehicle_id' => $vehicle->id,
                     'module_id'  => $module->id,
@@ -86,23 +88,28 @@ class PlannerController extends Controller
                     'end_time'   => $end,
                 ]);
             }
-
+    
+            // Zet de status van het voertuig naar "in_productie"
             $vehicle->update(['status' => 'in_productie']);
+    
+            // Commit de transactie, alles is goed gegaan
             DB::commit();
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Voertuig succesvol ingepland!',
             ]);
         } catch (\Exception $e) {
+            // Als er een fout optreedt, roll back de transactie
             DB::rollBack();
-
+    
             return response()->json([
                 'success' => false,
                 'message' => 'Fout bij inplannen: ' . $e->getMessage(),
-            ], 422);
+            ], 422);  // 422 is een HTTP-status voor validatiefouten
         }
     }
+    
 
     /**
      * Bepaal welke robot verantwoordelijk is voor assemblage op basis van het voertuigtype.

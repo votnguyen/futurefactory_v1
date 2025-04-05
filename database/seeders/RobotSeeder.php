@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Robot;
 
@@ -16,21 +15,20 @@ class RobotSeeder extends Seeder
         $robots = [
             [
                 'name' => 'TwoWheels',
-                'description' => 'Verantwoordelijk voor alle tweewielers'
+                'compatible_types' => '',
             ],
             [
                 'name' => 'HydroBoy',
-                'description' => 'Waterstofvoertuigen specialist'
+                'compatible_types' => '',
             ],
             [
                 'name' => 'HeavyD',
-                'description' => 'Zware voertuigen expert'
+                'compatible_types' => '',
             ]
         ];
         
         foreach ($robots as $robot) {
             Robot::create($robot);
         }
-    
     }
 }

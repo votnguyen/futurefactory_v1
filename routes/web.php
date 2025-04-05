@@ -95,4 +95,8 @@ Route::get('/schedules', function () {
     });
 });
 
+
+Route::post('/planner/store', [PlannerController::class, 'store'])->name('planner.store');
+
+
 require __DIR__ . '/auth.php';

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use App\Models\Vehicle;
+use App\Models\User;
+use App\Models\Schedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use App\Models\User;
 
 class VehicleAssemblyController extends Controller
 {
@@ -33,7 +35,7 @@ class VehicleAssemblyController extends Controller
             'aandrijving'  => 'required|exists:modules,id',
             'wielen'       => 'required|exists:modules,id',
             'stuur'        => 'required|exists:modules,id',
-            'stoelen'      => 'nullable|exists:modules,id'
+            'stoelen'      => 'nullable|exists:modules,id',
         ]);
 
         // Combineer de module IDs in een array (filter eventuele null-waarden eruit)
@@ -69,6 +71,9 @@ class VehicleAssemblyController extends Controller
         foreach ($selectedModules as $module) {
             $vehicle->modules()->attach($module->id, ['assembly_order' => $order++]);
         }
+
+        // Plan het voertuig voor montage
+        $this->planVehicleAssembly($vehicle, $selectedModules);
 
         return redirect()->route('monteur.assembly.show', $vehicle)
                          ->with('success', 'Voertuig succesvol samengesteld!');
@@ -114,6 +119,31 @@ class VehicleAssemblyController extends Controller
                     'wielen' => "Wielen '{$wheel->name}' passen niet bij chassis '{$chassis->name}'."
                 ]);
             }
+        }
+    }
+
+    /**
+     * Plan het voertuig in de planner met tijdsloten voor de modules.
+     *
+     * @param \App\Models\Vehicle $vehicle
+     * @param \Illuminate\Support\Collection $modules
+     * @return void
+     */
+    private function planVehicleAssembly(Vehicle $vehicle, $modules)
+    {
+        $startTime = Carbon::now(); // Stel het starttijdstip in
+        $currentTime = $startTime;
+
+        // Loop door de modules en wijs tijdsloten toe
+        foreach ($modules as $module) {
+            $endTime = $currentTime->copy()->addHours($module->assembly_time); // Bereken eindtijd
+            Schedule::create([
+                'vehicle_id' => $vehicle->id,
+                'module_id' => $module->id,
+                'start_time' => $currentTime,
+                'end_time' => $endTime,
+            ]);
+            $currentTime = $endTime; // Zet de volgende starttijd gelijk aan de vorige eindtijd
         }
     }
 }

@@ -1,6 +1,6 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
-@section('content') 
+@section('content')
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-6">Productieplanning</h1>
 
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error instanceof TypeError) {
                 showFormMessage('Server niet bereikbaar of netwerkfout.', false);
             } else {
-                showFormMessage('Onverwachte fout bij het inplannen.', false);
+                showFormMessage('Onverwachte fout bij het inplannen. Zie console voor details.', false);
             }
         }
     });

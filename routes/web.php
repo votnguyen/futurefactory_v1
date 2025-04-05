@@ -6,7 +6,7 @@ use App\Http\Controllers\MonteurController;
 use App\Http\Controllers\PlannerController;
 use App\Http\Controllers\KlantController;
 use App\Http\Controllers\InkoperController;
-
+use App\Http\Controllers\VehicleAssemblyController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +37,13 @@ Route::middleware(['auth', 'role:klant'])->group(function () {
 
 Route::middleware(['auth', 'role:inkoper'])->group(function () {
     Route::get('/inkoper', [InkoperController::class, 'dashboard'])->name('inkoper.dashboard');
+});
+
+Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(function () {
+    Route::get('/', [VehicleAssemblyController::class, 'index'])->name('monteur.assembly.index');
+    Route::get('/create', [VehicleAssemblyController::class, 'create'])->name('monteur.assembly.create');
+    Route::post('/', [VehicleAssemblyController::class, 'store'])->name('monteur.assembly.store');
+    Route::get('/{vehicle}', [VehicleAssemblyController::class, 'show'])->name('monteur.assembly.show');
 });
 
 require __DIR__.'/auth.php';

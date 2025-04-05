@@ -1,5 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* Voeg toe aan resources/css/app.css */
 [x-cloak] { display: none; }
+
+
+.fc-event {
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.fc-highlight {
+    background: rgba(59, 130, 246, 0.1);
+}

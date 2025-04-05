@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Vehicle extends Model
 {
     use HasFactory;
@@ -35,4 +36,9 @@ class Vehicle extends Model
         $this->total_assembly_time = $this->modules->sum('assembly_time');
         $this->save();
     }
+
+    public function schedules()
+{
+    return $this->hasMany(Schedule::class);
+}
 }

@@ -7,7 +7,9 @@ use App\Http\Controllers\PlannerController;
 use App\Http\Controllers\KlantController;
 use App\Http\Controllers\InkoperController;
 use App\Http\Controllers\VehicleAssemblyController;
+use App\Http\Controllers\VehicleType;
 use App\Http\Controllers\VehicleTypeController;
+
 
 
 Route::get('/', function () {
@@ -47,5 +49,11 @@ Route::prefix('monteur/assembly')->middleware(['auth', 'role:monteur'])->group(f
     Route::get('/{vehicle}', [VehicleAssemblyController::class, 'show'])->name('monteur.assembly.show');
     Route::get('/monteur/assembly', [VehicleAssemblyController::class, 'index'])->name('monteur.assembly.index');
 
+});
+
+Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
+    Route::get('/planning', [PlanningController::class, 'index'])->name('planner.index');
+    Route::post('/planning', [PlanningController::class, 'store'])->name('planner.store');
+    Route::get('/planning/{vehicle}', [PlanningController::class, 'show'])->name('planner.show');
 });
 require __DIR__.'/auth.php';

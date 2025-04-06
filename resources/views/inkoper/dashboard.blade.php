@@ -94,7 +94,7 @@
                             <div class="flex items-center">
                                 @if($module->image_path)
                                 <div class="flex-shrink-0 h-20 w-20">
-                     <img class="h-20 w-20 rounded-lg object-cover border border-gray-300" src="{{ asset('storage/' . $module->image_path) }}" alt="{{ $module->name }}">
+                 <img class="h-20 w-20 rounded-lg object-cover border border-gray-300" src="{{ asset('storage/' . $module->image_path) }}" alt="{{ $module->name }}">
 </div>
 
                                 @endif

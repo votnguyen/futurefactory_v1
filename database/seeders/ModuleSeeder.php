@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Module;
-use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 class ModuleSeeder extends Seeder
 {
@@ -17,7 +16,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Step LightFrame',
                 'type' => 'chassis',
                 'cost' => 3000,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'wielen' => 2,
                     'voertuig_type' => 'Step',
@@ -29,7 +28,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Fiets StandardFrame',
                 'type' => 'chassis',
                 'cost' => 2500,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'wielen' => 2,
                     'voertuig_type' => 'Fiets',
@@ -41,7 +40,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Scooter ProFrame',
                 'type' => 'chassis',
                 'cost' => 3500,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'wielen' => 2,
                     'voertuig_type' => 'Scooter',
@@ -53,7 +52,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Nikinella Chassis',
                 'type' => 'chassis',
                 'cost' => 4400,
-                'assembly_time' => 4,
+                'assembly_time' => 2,
                 'specifications' => [
                     'wielen' => 4,
                     'voertuig_type' => 'Personenauto',
@@ -65,7 +64,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Frame TGP India',
                 'type' => 'chassis',
                 'cost' => 6500,
-                'assembly_time' => 6,
+                'assembly_time' => 2,
                 'specifications' => [
                     'wielen' => 6,
                     'voertuig_type' => 'Vrachtwagen',
@@ -77,7 +76,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Bus MegaFrame',
                 'type' => 'chassis',
                 'cost' => 8000,
-                'assembly_time' => 8,
+                'assembly_time' => 3,
                 'specifications' => [
                     'wielen' => 6,
                     'voertuig_type' => 'Bus',
@@ -91,7 +90,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'E-Step Motor 3pk',
                 'type' => 'aandrijving',
                 'cost' => 8000,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'soort' => 'elektriciteit',
                     'vermogen' => '3pk',
@@ -103,7 +102,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'E-Bike Power+ 7pk',
                 'type' => 'aandrijving',
                 'cost' => 12000,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'soort' => 'elektriciteit',
                     'vermogen' => '7pk',
@@ -115,7 +114,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'E-Auto 204pk',
                 'type' => 'aandrijving',
                 'cost' => 25000,
-                'assembly_time' => 4,
+                'assembly_time' => 2,
                 'specifications' => [
                     'soort' => 'waterstof',
                     'vermogen' => '204pk',
@@ -127,7 +126,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'E-Bus 408pk',
                 'type' => 'aandrijving',
                 'cost' => 60000,
-                'assembly_time' => 4,
+                'assembly_time' => 3,
                 'specifications' => [
                     'soort' => 'elektriciteit',
                     'vermogen' => '408pk',
@@ -167,7 +166,7 @@ class ModuleSeeder extends Seeder
                 'specifications' => [
                     'soort' => 'waterstof',
                     'vermogen' => '400pk',
-                    'compatibele_voertuigen' => ['Vrachtwagen','Personenauto']
+                    'compatibele_voertuigen' => ['Vrachtwagen']
                 ],
                 'image_path' => 'aandrijving-waterstof-vracht.png'
             ],
@@ -179,7 +178,7 @@ class ModuleSeeder extends Seeder
                 'specifications' => [
                     'soort' => 'waterstof',
                     'vermogen' => '350pk',
-                    'compatibele_voertuigen' => ['Bus', 'personenauto']
+                    'compatibele_voertuigen' => ['Bus']
                 ],
                 'image_path' => 'aandrijving-waterstof-bus.png'
             ],
@@ -189,7 +188,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Z15-4',
                 'type' => 'wielen',
                 'cost' => 1200,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'band_type' => 'zomerband',
                     'diameter' => '15 inch',
@@ -202,7 +201,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Auto Premium 18"',
                 'type' => 'wielen',
                 'cost' => 2000,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'band_type' => 'all-season',
                     'diameter' => '18 inch',
@@ -241,7 +240,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Step Wielen 10"',
                 'type' => 'wielen',
                 'cost' => 800,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'band_type' => 'all-season',
                     'diameter' => '10 inch',
@@ -254,7 +253,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Fiets Wielen 28"',
                 'type' => 'wielen',
                 'cost' => 600,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'band_type' => 'zomerband',
                     'diameter' => '28 inch',
@@ -267,7 +266,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'Scooter Wielen 12"',
                 'type' => 'wielen',
                 'cost' => 900,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'band_type' => 'winter',
                     'diameter' => '12 inch',
@@ -282,11 +281,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'schapenstadium',
                 'type' => 'stuur',
                 'cost' => 400,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'speciale_aanpassingen' => 'schapenvacht',
-                    'vorm' => 'stadium',
-                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India', 'Bus MegaFrame']
+                    'vorm' => 'stadium'
                 ],
                 'image_path' => 'stuur-schapenstadium.png'
             ],
@@ -294,11 +292,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'Auto Sportstuur',
                 'type' => 'stuur',
                 'cost' => 600,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'speciale_aanpassingen' => 'multifunctioneel',
-                    'vorm' => 'ovaal',
-                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India', 'Bus MegaFrame']
+                    'vorm' => 'ovaal'
                 ],
                 'image_path' => 'stuur-auto-sport.png'
             ],
@@ -328,12 +325,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'Step Stuur',
                 'type' => 'stuur',
                 'cost' => 200,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'speciale_aanpassingen' => 'lichtgewicht',
-                    'vorm' => 'rond',
-                    'geschikt_voor' => ['Step LightFrame']
-                    
+                    'vorm' => 'rond'
                 ],
                 'image_path' => 'stuur-step.png'
             ],
@@ -344,22 +339,9 @@ class ModuleSeeder extends Seeder
                 'assembly_time' => 2,
                 'specifications' => [
                     'speciale_aanpassingen' => 'versterkt',
-                    'vorm' => 'hexagon',
-                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India', 'Bus MegaFrame']
+                    'vorm' => 'hexagon'
                 ],
                 'image_path' => 'stuur-heavy-duty.png'
-            ],
-            [
-                'name'=> 'Fiets Stuur',
-                'type' => 'stuur',
-                'cost' => 300,
-                'assembly_time' => 2,
-                'specifications' => [
-                    'speciale_aanpassingen' => 'lichtgewicht',
-                    'vorm' => 'rond',
-                    'geschikt_voor' => ['Fiets StandardFrame']
-                ],
-                'image_path' => 'stuur-fiets.png'
             ],
 
             // --- STOELEN/ZADEL MODULES ---
@@ -367,12 +349,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'Luxe Stoelenset',
                 'type' => 'stoelen',
                 'cost' => 1600,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'aantal' => 5,
-                    'stoffering' => 'leer',
-                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India'] 
-                    
+                    'stoffering' => 'leer'
                 ],
                 'image_path' => 'stoelen-luxe.png'
             ],
@@ -383,8 +363,7 @@ class ModuleSeeder extends Seeder
                 'assembly_time' => 2,
                 'specifications' => [
                     'aantal' => 5,
-                    'stoffering' => 'sportleer',
-                    'geschikt_voor' => ['Nikinella Chassis', 'Frame TGP India']
+                    'stoffering' => 'sportleer'
                 ],
                 'image_path' => 'stoelen-auto-sport.png'
             ],
@@ -395,8 +374,7 @@ class ModuleSeeder extends Seeder
                 'assembly_time' => 2,
                 'specifications' => [
                     'aantal' => 2,
-                    'stoffering' => 'geventileerd leer',
-                    'geschikt_voor' => ['Frame TGP India']
+                    'stoffering' => 'geventileerd leer'
                 ],
                 'image_path' => 'stoelen-vrachtwagen.png'
             ],
@@ -407,8 +385,7 @@ class ModuleSeeder extends Seeder
                 'assembly_time' => 3,
                 'specifications' => [
                     'aantal' => 20,
-                    'stoffering' => 'stof',
-                    'geschikt_voor' => ['Bus MegaFrame']
+                    'stoffering' => 'stof'
                 ],
                 'image_path' => 'stoelen-bus.png'
             ],
@@ -416,11 +393,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'Fiets Zadel',
                 'type' => 'stoelen',
                 'cost' => 150,
-                'assembly_time' => 2,
+                'assembly_time' => 1,
                 'specifications' => [
                     'aantal' => 1,
-                    'stoffering' => 'kunstleer',
-                    'geschikt_voor' => ['Fiets StandardFrame']
+                    'stoffering' => 'kunstleer'
                 ],
                 'image_path' => 'zadel-fiets.png'
             ]

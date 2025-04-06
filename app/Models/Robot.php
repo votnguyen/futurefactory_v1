@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Robot extends Model
 {
+
+    use HasFactory;
     // Voeg 'description' toe aan de fillable array
     protected $fillable = ['name', 'description', 'compatible_types'];
 

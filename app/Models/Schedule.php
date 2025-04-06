@@ -32,6 +32,21 @@ class Schedule extends Model
         return $this->belongsTo(Module::class);
     }
 
+    public function customer()
+{
+    return $this->belongsTo(Customer::class);
+}
+
+public function modules()
+{
+    return $this->belongsToMany(Module::class);
+}
+
+public function schedules()
+{
+    return $this->hasMany(Schedule::class);
+}
+
     // Controleer of het tijdslot beschikbaar is
     public static function isSlotAvailable($robotId, $startTime, $durationHours)
     {
@@ -66,7 +81,7 @@ class Schedule extends Model
             DB::beginTransaction();
 
             // Haal het voertuig op
-            $vehicle = Vehicle::findOrFail($validated['vehicle_id']);
+            $vehicle = Vehicle::where('id', $validated['vehicle_id'])->firstOrFail();
 
             // Haal de robot op voor het voertuig
             $robot = $this->determineRobot($vehicle);

@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         timeZone: 'local',
         initialView: 'timeGridWeek',
         slotDuration: '02:00:00',
-        slotMinTime: '10:00:00',
+        slotMinTime: '08:00:00',
         slotMaxTime: '18:00:00',
         selectable: true,
         editable: false,

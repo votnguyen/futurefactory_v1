@@ -185,26 +185,27 @@ class PlannerController extends Controller
      * Toon alle voertuigen, ongeacht status, met aanvullende statuskleuren.
      */
     public function completedVehicles()
-    {
-        $vehicles = Vehicle::withoutGlobalScopes()
-                    ->with(['customer', 'modules', 'schedules'])
-                    ->orderBy('id', 'desc')
-                    ->get();
+{
+    $vehicles = Vehicle::withoutGlobalScopes()
+                ->with(['customer', 'modules', 'schedules'])
+                ->orderBy('id', 'desc')
+                ->get();
 
-        if ($vehicles->isEmpty()) {
-            \Log::error('GEEN VOERTUIGEN GEVONDEN - Database:', [
-                'tables' => \DB::select('SHOW TABLES'),
-                'vehicles_table' => \DB::select('DESCRIBE vehicles')
-            ]);
-        }
+    \Log::info('VOERTUIGEN GEHAALD', ['vehicles' => $vehicles->toArray()]);
 
-        return view('planner.completed', [
-            'vehicles' => $vehicles,
-            'statusColors' => [
-                'concept' => 'bg-gray-100 text-gray-800',
-                'in_productie' => 'bg-yellow-100 text-yellow-800',
-                'voltooid' => 'bg-green-100 text-green-800'
-            ]
-        ]);
+    foreach ($vehicles as $vehicle) {
+        // voortgang e.d. berekening (zoals eerder gegeven)
     }
+
+    return view('planner.completed', [
+        'vehicles' => $vehicles,
+        'statusColors' => [
+            'concept' => 'bg-gray-100 text-gray-800',
+            'in_productie' => 'bg-yellow-100 text-yellow-800',
+            'voltooid' => 'bg-green-100 text-green-800'
+        ]
+    ]);
+}
+
+    
 }

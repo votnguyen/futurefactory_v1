@@ -93,9 +93,10 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 @if($module->image_path)
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . $module->image_path) }}" alt="{{ $module->name }}">
-                                </div>
+                                <div class="flex-shrink-0 h-20 w-20">
+                     <img class="h-20 w-20 rounded-lg object-cover border border-gray-300" src="{{ asset('storage/' . $module->image_path) }}" alt="{{ $module->name }}">
+</div>
+
                                 @endif
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $module->name }}</div>

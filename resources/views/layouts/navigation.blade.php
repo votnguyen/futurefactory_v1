@@ -23,6 +23,9 @@
                 @if(Auth::user()->hasRole('planner'))
                     <x-dropdown-link :href="route('planner.dashboard')">
                         Planner Dashboard
+                        <x-nav-link :href="route('planner.completed')" :active="request()->routeIs('planner.completed')">
+                        Voltooide Voertuigen
+                        </x-nav-link>
                     </x-dropdown-link>
                 @endif
 

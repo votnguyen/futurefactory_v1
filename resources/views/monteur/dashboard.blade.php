@@ -5,7 +5,7 @@
     <h1 class="text-2xl font-bold mb-6">Monteur Dashboard</h1>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="bg-black p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Snelle Acties</h2>
             <a href="{{ route('monteur.assembly.create') }}" class="block bg-blue-500 hover:bg-blue-700 text-black font-bold py-3 px-4 rounded mb-3 text-center">
                 Nieuw Voertuig Samenstellen

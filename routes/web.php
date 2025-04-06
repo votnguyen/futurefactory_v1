@@ -111,8 +111,28 @@ Route::get('/get-scheduled-events', function() {
                 'end' => $event->end_time,
             ];
         }),
+
+        Route::prefix('planner')->group(function () {
+            Route::get('/completed', [PlannerController::class, 'completedVehicles'])
+                 ->name('planner.completed');
+        }),
+        
+        Route::prefix('inkoper')->middleware(['auth', 'role:inkoper'])->group(function () {
+            // Modulebeheer routes
+            Route::resource('modules', \App\Http\Controllers\Inkoper\ModuleController::class);
+            
+            // Extra routes voor soft-delete functionaliteit
+            Route::get('modules/archived', [\App\Http\Controllers\Inkoper\ModuleController::class, 'archived'])
+                 ->name('inkoper.modules.archived');
+            Route::patch('modules/{module}/restore', [\App\Http\Controllers\Inkoper\ModuleController::class, 'restore'])
+                 ->name('inkoper.modules.restore');
+            Route::delete('modules/{module}/force-delete', [\App\Http\Controllers\Inkoper\ModuleController::class, 'forceDelete'])
+                 ->name('inkoper.modules.forceDelete');
+        }),
+        
     ]);
 
+    
     
 });
 

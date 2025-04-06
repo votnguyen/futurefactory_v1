@@ -17,7 +17,7 @@ class PlannerController extends Controller
      */
     public function dashboard()
     {
-        $vehicles = Vehicle::where('status', 'concept')->get();
+        $vehicles = Vehicle::whereIn('status', ['concept', 'gepland'])->get();
 
         return view('planner.dashboard', compact('vehicles'));
     }
@@ -48,7 +48,7 @@ class PlannerController extends Controller
         ]);
     
         // Haal het voertuig op en laadt de modules
-        $vehicle = Vehicle::with('modules')->findOrFail($validated['vehicle_id']);
+        $vehicle = Vehicle::with('modules')->where('id', $validated['vehicle_id'])->firstOrFail();
         
         // Bepaal welke robot gebruikt moet worden voor dit voertuig
         $robot = $this->determineRobot($vehicle);
@@ -148,6 +148,30 @@ public function completed()
    }
 
    return view('planner.completed', compact('vehicles'));
+}
+public function completedVehicles()
+{
+    // Overschrijf alle eventuele filters
+    $vehicles = Vehicle::withoutGlobalScopes()
+                ->with(['customer', 'modules', 'schedules'])
+                ->orderBy('id', 'desc')
+                ->get();
+
+    if ($vehicles->isEmpty()) {
+        \Log::error('GEEN VOERTUIGEN GEVONDEN - Database:', [
+            'tables' => \DB::select('SHOW TABLES'),
+            'vehicles_table' => \DB::select('DESCRIBE vehicles')
+        ]);
+    }
+
+    return view('planner.completed', [
+        'vehicles' => $vehicles,
+        'statusColors' => [
+            'concept' => 'bg-gray-100 text-gray-800',
+            'in_productie' => 'bg-yellow-100 text-yellow-800',
+            'voltooid' => 'bg-green-100 text-green-800'
+        ]
+    ]);
 }
     
 }

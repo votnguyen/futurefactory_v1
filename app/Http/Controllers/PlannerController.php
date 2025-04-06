@@ -134,5 +134,20 @@ class PlannerController extends Controller
 }
 
 
+public function completed()
+{
+   // We gaan ervan uit dat voertuigen met status 'voltooid' als compleet worden beschouwd.
+   $vehicles = Vehicle::where('status', 'voltooid')
+       ->with('customer')
+       ->get();
+
+   // Voor elk voertuig bepalen we de verwachte opleveringsdatum als de maximale eindtijd van alle schedules.
+   foreach ($vehicles as $vehicle) {
+       $maxEndTime = Schedule::where('vehicle_id', $vehicle->id)->max('end_time');
+       $vehicle->expected_delivery = $maxEndTime;
+   }
+
+   return view('planner.completed', compact('vehicles'));
+}
     
 }

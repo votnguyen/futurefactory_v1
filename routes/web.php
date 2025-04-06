@@ -45,6 +45,9 @@ Route::middleware(['auth', 'role:planner'])->prefix('planner')->group(function (
     Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('planner.show');
     Route::post('/schedule', [PlannerController::class, 'store'])->name('planner.schedule.store');
     Route::get('/planner/planning', [PlannerController::class, 'showPlanning'])->name('planner.planning');
+
+      // Nieuwe route voor voltooide voertuigen
+      Route::get('/completed', [PlannerController::class, 'completed'])->name('planner.completed');
 });
 
 // Klant
@@ -96,6 +99,7 @@ Route::get('/schedules', function () {
     });
 });
 
+
 // Eventen ophalen voor de kalender
 Route::get('/get-scheduled-events', function() {
     $events = Schedule::all();  // Hier gebruiken we Schedule in plaats van Planning
@@ -108,6 +112,10 @@ Route::get('/get-scheduled-events', function() {
             ];
         }),
     ]);
+
+    
 });
+
+
 
 require __DIR__ . '/auth.php';

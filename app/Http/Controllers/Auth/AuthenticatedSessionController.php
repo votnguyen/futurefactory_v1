@@ -22,13 +22,42 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
-
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+    
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+    
         $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+    
+        // ➤ Stuur door op basis van rol
+        $user = Auth::user();
+        
+        if ($user->hasRole('monteur')) {
+            return redirect()->route('monteur.dashboard');
+        }
+    
+        if ($user->hasRole('planner')) {
+            return redirect()->route('planner.dashboard');
+        }
+    
+        if ($user->hasRole('klant')) {
+            return redirect()->route('klant.dashboard');
+        }
+    
+        if ($user->hasRole('inkoper')) {
+            return redirect()->route('inkoper.dashboard');
+        }
+    
+        // fallback
+        return redirect()->route('dashboard');
     }
 
     /**

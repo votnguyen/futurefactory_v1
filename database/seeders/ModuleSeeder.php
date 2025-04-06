@@ -344,6 +344,18 @@ class ModuleSeeder extends Seeder
                 'image_path' => 'stuur-heavy-duty.png'
             ],
 
+            [
+                'name'=> 'Fiets Stuur',
+                'type'=> 'stuur',
+                'cost'=> 300,
+                'assembly_time'=> 1,
+                'specifications'=> [
+                    'speciale_aanpassingen'=> 'lichtgewicht',
+                    'vorm'=> 'rond'
+                ],
+                'image_path'=> 'stuur-fiets.png'
+            ],
+
             // --- STOELEN/ZADEL MODULES ---
             [
                 'name' => 'Luxe Stoelenset',

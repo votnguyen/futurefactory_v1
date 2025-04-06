@@ -46,7 +46,7 @@
 
     <!-- Actieknoppen -->
     <div class="flex flex-wrap gap-4">
-        <a href="{{ route('planner.planning.index') }}" class="inline-block bg-blue-500 text-black px-6 py-2 rounded-md shadow-md hover:bg-blue-600">
+        <a href="{{ route('planner.index') }}" class="inline-block bg-blue-500 text-black px-6 py-2 rounded-md shadow-md hover:bg-blue-600">
             Bekijk voertuigen en plan productie
         </a>
         <a href="{{ route('planner.completed') }}" class="inline-block bg-green-500 text-black px-6 py-2 rounded-md shadow-md hover:bg-green-600">

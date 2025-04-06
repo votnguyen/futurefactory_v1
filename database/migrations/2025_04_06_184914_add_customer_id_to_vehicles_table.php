@@ -12,14 +12,15 @@ return new class extends Migration
     public function up()
 {
     Schema::table('vehicles', function (Blueprint $table) {
-        $table->foreignId('user_id')->nullable()->change();
+        $table->foreignId('customer_id')->constrained()->onDelete('cascade');
     });
 }
 
 public function down()
 {
     Schema::table('vehicles', function (Blueprint $table) {
-        $table->foreignId('user_id')->nullable(false)->change();
+        $table->dropForeign(['customer_id']);
+        $table->dropColumn('customer_id');
     });
 }
 };

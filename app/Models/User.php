@@ -23,11 +23,6 @@ class User extends Authenticatable {
     public function hasRole($roleName) {
         return $this->roles()->where('name', $roleName)->exists();
     }
-
-    public function vehicles()
-    {
-        return $this->hasMany(Vehicle::class, 'user_id');
-    }
     
     
 }

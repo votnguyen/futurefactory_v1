@@ -93,10 +93,4 @@ public function getStatusAttribute($value)
     return self::$statuses[$value] ?? $value;
 }
     
-public function user()
-{
-    return $this->belongsTo(User::class);
-}
-
-
 }

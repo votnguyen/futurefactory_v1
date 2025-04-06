@@ -8,13 +8,15 @@
             <p class="text-gray-600 mt-2">Welkom terug, {{ Auth::user()->name }}!</p>
         </div>
         <div class="flex space-x-2">
-            <a href="{{ route('inkoper.modules.create') }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                </svg>
-                Nieuwe Module
-            </a>
+            @if(Route::has('inkoper.modules.create'))
+                <a href="{{ route('inkoper.modules.create') }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    Nieuwe Module
+                </a>
+            @endif
         </div>
     </div>
 
@@ -29,7 +31,7 @@
                 </div>
                 <div>
                     <p class="text-gray-500">Actieve Modules</p>
-                    <p class="text-2xl font-semibold">{{ Module::count() }}</p>
+                    <p class="text-2xl font-semibold">{{ $modulesCount ?? Module::count() }}</p>
                 </div>
             </div>
         </div>
@@ -43,7 +45,13 @@
                 </div>
                 <div>
                     <p class="text-gray-500">Laatste Update</p>
-                    <p class="text-2xl font-semibold">{{ Module::latest()->first()->updated_at->diffForHumans() ?? 'N/A' }}</p>
+                    <p class="text-2xl font-semibold">
+                        @if($latestModule ?? Module::latest()->first())
+                            {{ ($latestModule ?? Module::latest()->first())->updated_at->diffForHumans() }}
+                        @else
+                            N/A
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -57,7 +65,7 @@
                 </div>
                 <div>
                     <p class="text-gray-500">Module Types</p>
-                    <p class="text-2xl font-semibold">{{ Module::select('type')->distinct()->count() }}</p>
+                    <p class="text-2xl font-semibold">{{ $moduleTypesCount ?? Module::select('type')->distinct()->count() }}</p>
                 </div>
             </div>
         </div>
@@ -80,7 +88,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse(Module::latest()->take(5)->get() as $module)
+                    @forelse($recentModules ?? Module::latest()->take(5)->get() as $module)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -108,12 +116,16 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('inkoper.modules.edit', $module) }}" class="text-blue-600 hover:text-blue-900 mr-3">Bewerken</a>
-                            <form action="{{ route('inkoper.modules.destroy', $module) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Archiveren</button>
-                            </form>
+                            @if(Route::has('inkoper.modules.edit'))
+                                <a href="{{ route('inkoper.modules.edit', $module) }}" class="text-blue-600 hover:text-blue-900 mr-3">Bewerken</a>
+                            @endif
+                            @if(Route::has('inkoper.modules.destroy'))
+                                <form action="{{ route('inkoper.modules.destroy', $module) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Archiveren</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -128,9 +140,11 @@
         </div>
         <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div class="flex-1 flex justify-between sm:hidden">
-                <a href="{{ route('inkoper.modules.index') }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Bekijk alle modules
-                </a>
+                @if(Route::has('inkoper.modules.index'))
+                    <a href="{{ route('inkoper.modules.index') }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Bekijk alle modules
+                    </a>
+                @endif
             </div>
         </div>
     </div>

@@ -1,4 +1,3 @@
-// resources/views/inkoper/modules/index.blade.php
 @extends('layouts.app')
 
 @section('content')

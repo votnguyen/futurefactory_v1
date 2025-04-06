@@ -130,6 +130,10 @@ Route::get('/get-scheduled-events', function() {
                  ->name('inkoper.modules.forceDelete');
         }),
         
+        Route::middleware(['auth', 'role:inkoper'])->prefix('inkoper')->group(function () {
+            Route::resource('modules', \App\Http\Controllers\Inkoper\ModuleController::class);
+        }),
+        
     ]);
 
     

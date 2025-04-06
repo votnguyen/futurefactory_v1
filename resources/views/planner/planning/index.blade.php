@@ -20,49 +20,50 @@
                 <div id="formErrors" class="text-red-600 font-semibold"></div>
             </div>
 
-            <form id="planningForm" method="POST" action="{{ route('planner.store') }}">
-                @csrf
-                <input type="hidden" name="start_time" id="selectedSlot">
+            <form id="planningForm" method="POST" action="{{ route('planner.planning.store') }}">
+    @csrf
+    <input type="hidden" name="start_time" id="selectedSlot">
 
-                <!-- Voertuigselectie -->
-                <div class="mb-4">
-                    <label class="block font-medium mb-2">Selecteer voertuig:</label>
-                    <select name="vehicle_id" class="w-full p-2 border rounded" required>
-                        <option value="">-- Kies een voertuig --</option>
-                        @foreach($vehicles as $vehicle)
-                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
-                                {{ $vehicle->name }} ({{ $vehicle->customer->name }})
-                            </option>
-                        @endforeach
-                    </select>
+    <!-- Voertuigselectie -->
+    <div class="mb-4">
+        <label class="block font-medium mb-2">Selecteer voertuig:</label>
+        <select name="vehicle_id" class="w-full p-2 border rounded" required>
+            <option value="">-- Kies een voertuig --</option>
+            @foreach($vehicles as $vehicle)
+                <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
+                    {{ $vehicle->name }} ({{ $vehicle->customer->name }})
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Modules -->
+    <div class="mb-4">
+        <label class="block font-medium mb-2">Selecteer modules:</label>
+        <div id="moduleList" class="space-y-2">
+            @foreach($vehicles as $vehicle)
+                <div class="vehicle-modules" id="vehicle-{{ $vehicle->id }}" style="{{ old('vehicle_id') == $vehicle->id ? 'display:block;' : 'display:none;' }}">
+                    @foreach($vehicle->modules as $module)
+                        <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" 
+                                name="modules[]" 
+                                value="{{ $module->id }}" 
+                                class="vehicle-module mr-2"
+                                {{ in_array($module->id, old('modules', [])) ? 'checked' : '' }}>
+                            <span class="flex-1">{{ $module->name }} ({{ $module->type }})</span>
+                            <span class="text-sm text-gray-500">{{ $module->assembly_time }} uur</span>
+                        </label>
+                    @endforeach
                 </div>
+            @endforeach
+        </div>
+    </div>
 
-                <!-- Modules -->
-                <div class="mb-4">
-                    <label class="block font-medium mb-2">Selecteer modules:</label>
-                    <div id="moduleList" class="space-y-2">
-                        @foreach($vehicles as $vehicle)
-                            <div class="vehicle-modules" id="vehicle-{{ $vehicle->id }}" style="{{ old('vehicle_id') == $vehicle->id ? 'display:block;' : 'display:none;' }}">
-                                @foreach($vehicle->modules as $module)
-                                    <label class="flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" 
-                                            name="modules[]" 
-                                            value="{{ $module->id }}" 
-                                            class="vehicle-module mr-2"
-                                            {{ in_array($module->id, old('modules', [])) ? 'checked' : '' }}>
-                                        <span class="flex-1">{{ $module->name }} ({{ $module->type }})</span>
-                                        <span class="text-sm text-gray-500">{{ $module->assembly_time }} uur</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+    <button type="submit" class="bg-blue-500 text-black px-4 py-2 rounded w-full">
+        Inplannen
+    </button>
+</form>
 
-                <button type="submit" class="bg-blue-500 text-black px-4 py-2 rounded w-full">
-                    Inplannen
-                </button>
-            </form>
         </div>
     </div>
 </div>

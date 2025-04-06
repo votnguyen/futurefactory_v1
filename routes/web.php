@@ -8,7 +8,9 @@ use App\Http\Controllers\{
     KlantController,
     InkoperController,
     VehicleAssemblyController,
-    Inkoper\ModuleController
+    Inkoper\ModuleController,
+    CustomerDashboardController,
+    VehicleController,
 };
 
 // Homepagina voor niet-ingelogde gebruikers
@@ -55,14 +57,26 @@ Route::middleware(['auth', 'role:monteur'])->prefix('monteur')->name('monteur.')
 });
 
 // Planner Routes
-Route::middleware(['auth', 'role:planner'])->prefix('planner')->name('planner.')->group(function () {
-    Route::get('/', [PlannerController::class, 'dashboard'])->name('dashboard');
-    Route::get('/planning', [PlannerController::class, 'index'])->name('index');
-    Route::post('/planning', [PlannerController::class, 'store'])->name('store');
-    Route::get('/planning/{vehicle}', [PlannerController::class, 'show'])->name('show');
-    Route::get('/completed', [PlannerController::class, 'completed'])->name('completed');
-});
+Route::prefix('planner')->middleware(['auth', 'role:planner'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [PlannerController::class, 'dashboard'])->name('planner.dashboard');
 
+    // Planner overzichtspagina's
+    Route::get('/', [PlannerController::class, 'index'])->name('planner.index');
+    Route::get('/completed', [PlannerController::class, 'completed'])->name('planner.completed');
+
+    // Voertuigen beheer
+    Route::prefix('vehicles')->group(function () {
+        Route::get('/', [PlannerController::class, 'vehiclesIndex'])->name('planner.vehicles.index');
+        Route::get('/completed', [PlannerController::class, 'vehiclesCompleted'])->name('planner.vehicles.completed');
+    });
+
+    // Planning
+    Route::prefix('planning')->group(function () {
+        Route::get('/', [PlannerController::class, 'planningIndex'])->name('planner.planning.index');
+        Route::post('/', [PlannerController::class, 'storePlanning'])->name('planner.planning.store');
+    });
+});
 // Klant Routes
 Route::middleware(['auth', 'role:klant'])->prefix('klant')->name('klant.')->group(function () {
     Route::get('/', [KlantController::class, 'dashboard'])->name('dashboard');
@@ -128,7 +142,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/klant/dashboard', [CustomerDashboardController::class, 'dashboard'])->name('klant.dashboard');
     });
 
-    Route::patch('/vehicles/{vehicle}/status', [VehicleStatusController::class, 'update'])
+    Route::patch('/vehicles/{vehicle}/status', [VehicleAssemblyController::class, 'update'])
     ->name('vehicles.status.update');
     
 });

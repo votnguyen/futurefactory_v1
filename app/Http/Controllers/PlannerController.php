@@ -45,7 +45,15 @@ class PlannerController extends Controller
         return view('planner.planning.index', compact('vehicles'));
     }
     
-
+    public function planningIndex()
+    {
+        // Haal de voertuigen op voor de planning
+        $vehicles = Vehicle::all(); // Zorg ervoor dat je de juiste voertuigen ophaalt
+    
+        // Geef de gegevens door naar de view
+        return view('planner.planning.index', compact('vehicles'));
+    }
+    
 
     
     

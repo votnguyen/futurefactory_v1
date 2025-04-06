@@ -9,17 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   // In de migratie:
-public function up()
+    public function up()
 {
     Schema::table('vehicles', function (Blueprint $table) {
-        // Als je customer_id wilt gebruiken:
-        $table->renameColumn('user_id', 'customer_id');
-        
-        // Of als je user_id wilt gebruiken (standaard Laravel):
-        // $table->renameColumn('customer_id', 'user_id');
+        $table->unsignedBigInteger('customer_id')->nullable()->change();
     });
 }
+
 
     /**
      * Reverse the migrations.

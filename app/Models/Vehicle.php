@@ -77,5 +77,20 @@ public function getDeliveryEstimateAttribute()
 
     }
 
+protected $casts = [
+    'status' => 'string'
+];
+
+public static $statuses = [
+    'concept' => 'Concept',
+    'in_productie' => 'In productie',
+    'gereed_voor_levering' => 'Gereed voor levering',
+    'geleverd' => 'Geleverd'
+];
+
+public function getStatusAttribute($value)
+{
+    return self::$statuses[$value] ?? $value;
+}
     
 }

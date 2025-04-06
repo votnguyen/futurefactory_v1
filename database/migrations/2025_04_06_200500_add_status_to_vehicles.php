@@ -9,20 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('vehicles', function (Blueprint $table) {
-            //
+            $table->enum('status', ['concept', 'in_productie', 'gereed_voor_levering', 'geleverd'])
+                  ->default('concept')
+                  ->after('user_id');
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    
+    public function down()
     {
         Schema::table('vehicles', function (Blueprint $table) {
-            //
+            $table->dropColumn('status');
         });
     }
 };

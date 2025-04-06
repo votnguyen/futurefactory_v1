@@ -123,6 +123,13 @@ Route::middleware('auth')->group(function () {
      Route::middleware('auth')->group(function() {
         Route::resource('vehicles', MonteurController::class)->only(['create', 'store', 'show']);
     });
+
+    Route::middleware(['auth', 'role:klant'])->group(function () {
+        Route::get('/klant/dashboard', [CustomerDashboardController::class, 'dashboard'])->name('klant.dashboard');
+    });
+
+    Route::patch('/vehicles/{vehicle}/status', [VehicleStatusController::class, 'update'])
+    ->name('vehicles.status.update');
     
 });
 

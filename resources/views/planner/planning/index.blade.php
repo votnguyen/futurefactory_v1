@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app') 
 
 @section('content')
 <div class="container mx-auto p-4">
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    // Modules tonen op basis van voertuigkeuze
+    // Toon de modules van het geselecteerde voertuig
     document.querySelector('[name="vehicle_id"]').addEventListener('change', function () {
         const vehicleId = this.value;
         document.querySelectorAll('.vehicle-modules').forEach(el => el.style.display = 'none');
@@ -174,16 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update de kalender zodat het ingeplande tijdslot nu permanent zichtbaar is
                 calendar.refetchEvents();
 
-                // BEHOUD: Het voertuig blijft in de dropdown
-                // Verwijder de ingeplande modules uit de lijst voor het geselecteerde voertuig
+                // Verwijder ingeplande modules uit de lijst van het geselecteerde voertuig
                 const vehicleId = formData.get('vehicle_id');
                 const checkedModules = document.querySelectorAll(`#vehicle-${vehicleId} input[type="checkbox"]:checked`);
                 checkedModules.forEach(cb => {
-                    // Verwijder de hele label zodat de module niet meer zichtbaar is
                     cb.closest('label').remove();
                 });
 
-                // Reset alleen de tijdslot-selectie (niet het hele formulier)
+                // Reset de tijdslot-selectie
                 document.getElementById('selectedSlot').value = '';
                 selectedTimeDisplay.textContent = '';
             } else {

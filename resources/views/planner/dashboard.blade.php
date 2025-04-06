@@ -9,11 +9,33 @@
     <!-- Overzicht van voertuigen in concept -->
     <div class="mb-6">
         <h2 class="text-xl font-semibold mb-2">Voertuigen in concept:</h2>
-        @if($vehicles->isEmpty())
+        @php
+            $conceptVehicles = $vehicles->where('status', 'concept');
+        @endphp
+        @if($conceptVehicles->isEmpty())
             <p class="text-gray-600">Er zijn geen voertuigen in concept.</p>
         @else
             <ul class="list-disc pl-5">
-                @foreach ($vehicles as $vehicle)
+                @foreach ($conceptVehicles as $vehicle)
+                    <li class="mb-2">
+                        <strong>{{ $vehicle->name }}</strong> - Status: <span class="text-gray-500">{{ $vehicle->status }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
+
+    <!-- Overzicht van voertuigen in productie -->
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Voertuigen in productie:</h2>
+        @php
+            $inProductionVehicles = $vehicles->where('status', 'in_productie');
+        @endphp
+        @if($inProductionVehicles->isEmpty())
+            <p class="text-gray-600">Er zijn geen voertuigen in productie.</p>
+        @else
+            <ul class="list-disc pl-5">
+                @foreach ($inProductionVehicles as $vehicle)
                     <li class="mb-2">
                         <strong>{{ $vehicle->name }}</strong> - Status: <span class="text-gray-500">{{ $vehicle->status }}</span>
                     </li>

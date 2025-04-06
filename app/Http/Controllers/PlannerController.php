@@ -17,69 +17,95 @@ class PlannerController extends Controller
      */
     public function dashboard()
     {
-        $vehicles = Vehicle::whereIn('status', ['concept', 'gepland'])->get();
-
+        // Haal zowel concept als in_productie voertuigen op
+        $vehicles = Vehicle::whereIn('status', ['concept', 'in_productie'])->get();
+    
         return view('planner.dashboard', compact('vehicles'));
     }
-
+    
     /**
      * Toon alle voertuigen met status 'concept'.
      */
     public function index()
     {
+        // Haal voertuigen op die nog in concept zijn
         $vehicles = Vehicle::where('status', 'concept')
-            ->with(['modules', 'customer']) // eager loading
+            ->with(['customer', 'modules'])
             ->get();
-
+    
+        // Filter per voertuig de modules die al ingepland zijn
+        foreach ($vehicles as $vehicle) {
+            $vehicle->unscheduled_modules = $vehicle->modules->filter(function($module) use ($vehicle) {
+                return Schedule::where('vehicle_id', $vehicle->id)
+                        ->where('module_id', $module->id)
+                        ->exists();
+            });
+        }
+    
         return view('planner.planning.index', compact('vehicles'));
     }
+    
+
+
+    
+    
 
     /**
-     * Toon de planningsgegevens voor een specifiek voertuig.
+     * Sla de planning van een voertuig op.
      */
     public function store(Request $request)
     {
         // Validatie van de ingediende gegevens
         $validated = $request->validate([
-            'vehicle_id'  => 'required|exists:vehicles,id',   // Voertuig moet bestaan
-            'start_time'  => 'required|date',                 // Starttijd moet een geldige datum zijn
-            'modules'     => 'required|array|min:1',           // Er moet minimaal 1 module worden geselecteerd
-            'modules.*'   => 'exists:modules,id',              // Elke geselecteerde module moet bestaan
+            'vehicle_id'  => 'required|exists:vehicles,id',
+            'start_time'  => 'required|date',
+            'modules'     => 'required|array|min:1',
+            'modules.*'   => 'exists:modules,id',
         ]);
-    
-        // Haal het voertuig op en laadt de modules
-        $vehicle = Vehicle::with('modules')->where('id', $validated['vehicle_id'])->firstOrFail();
-        
+
+        // Haal het voertuig op en laad de modules
+        $vehicle = Vehicle::with('modules')->findOrFail($validated['vehicle_id']);
+
+        // Zorg dat de geselecteerde modules ook bij dit voertuig horen
+        $vehicleModuleIds = $vehicle->modules->pluck('id')->toArray();
+        foreach ($validated['modules'] as $moduleId) {
+            if (!in_array($moduleId, $vehicleModuleIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Module met ID {$moduleId} behoort niet tot het geselecteerde voertuig."
+                ], 422);
+            }
+        }
+
         // Bepaal welke robot gebruikt moet worden voor dit voertuig
-        $robot = $this->determineRobot($vehicle);
-    
+        $robot = $this->determineRobot($vehicle->first());
+
         // Zet de starttijd om naar een Carbon instance
-        $startTime = Carbon::parse($validated['start_time']);
-    
-        // Begin de database transactie
+        $currentTime = Carbon::parse($validated['start_time']);
+
+        // Begin de database-transactie
         DB::beginTransaction();
-    
+
         try {
-            // Loop door de geselecteerde modules en plan ze in
+            // Plan de geselecteerde modules sequentieel in
             foreach ($validated['modules'] as $moduleId) {
                 $module = Module::findOrFail($moduleId);
-    
-                // Bepaal de start- en eindtijd voor de module
-                $start = $startTime->copy();
-                $end = $start->copy()->addHours($module->assembly_time);
-    
-                // Controleer of er geen conflict is voor dit voertuig, deze module, en dit tijdslot
+
+                // Stel de start- en eindtijd in op basis van de huidige tijd
+                $start = $currentTime->copy();
+                $end = $currentTime->copy()->addHours($module->assembly_time);
+
+                // Controleer op conflicts
                 $conflict = Schedule::where('vehicle_id', $vehicle->id)
                     ->where('module_id', $module->id)
                     ->where('start_time', $start)
                     ->exists();
-    
-                // Als er een conflict is, gooi een fout
+
                 if ($conflict) {
                     throw new \Exception("Module '{$module->name}' is al ingepland op dit tijdstip.");
                 }
-    
-                // Maak een nieuw schema voor de module
+
+                // Maak de schedule entry voor de module
                 Schedule::create([
                     'vehicle_id' => $vehicle->id,
                     'module_id'  => $module->id,
@@ -87,29 +113,29 @@ class PlannerController extends Controller
                     'start_time' => $start,
                     'end_time'   => $end,
                 ]);
+
+                // Update de huidige tijd voor de volgende module (sequentieel inplannen)
+                $currentTime = $end;
             }
-    
-            // Zet de status van het voertuig naar "in_productie"
+
+            // Werk de status van het voertuig bij
             $vehicle->update(['status' => 'in_productie']);
-    
-            // Commit de transactie, alles is goed gegaan
+
             DB::commit();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Voertuig succesvol ingepland!',
             ]);
         } catch (\Exception $e) {
-            // Als er een fout optreedt, roll back de transactie
             DB::rollBack();
-    
+
             return response()->json([
                 'success' => false,
                 'message' => 'Fout bij inplannen: ' . $e->getMessage(),
-            ], 422);  // 422 is een HTTP-status voor validatiefouten
+            ], 422);
         }
     }
-    
 
     /**
      * Bepaal welke robot verantwoordelijk is voor assemblage op basis van het voertuigtype.
@@ -125,53 +151,60 @@ class PlannerController extends Controller
             default                    => Robot::where('name', 'HydroBoy')->first(),
         };
     }
+
+    /**
+     * Toon de planning met alle ingeplande events.
+     */
     public function showPlanning()
-{
-    $vehicles = Vehicle::with('customer')->get();
-    $scheduledEvents = Planning::all(); // Haal de geplande evenementen op
+    {
+        $vehicles = Vehicle::with('customer')->get();
+        // Correct gebruik van het Schedule-model ipv een niet-bestaande Planning-model
+        $scheduledEvents = Schedule::all();
 
-    return view('planner.planning', compact('vehicles', 'scheduledEvents'));
-}
-
-
-public function completed()
-{
-   // We gaan ervan uit dat voertuigen met status 'voltooid' als compleet worden beschouwd.
-   $vehicles = Vehicle::where('status', 'voltooid')
-       ->with('customer')
-       ->get();
-
-   // Voor elk voertuig bepalen we de verwachte opleveringsdatum als de maximale eindtijd van alle schedules.
-   foreach ($vehicles as $vehicle) {
-       $maxEndTime = Schedule::where('vehicle_id', $vehicle->id)->max('end_time');
-       $vehicle->expected_delivery = $maxEndTime;
-   }
-
-   return view('planner.completed', compact('vehicles'));
-}
-public function completedVehicles()
-{
-    // Overschrijf alle eventuele filters
-    $vehicles = Vehicle::withoutGlobalScopes()
-                ->with(['customer', 'modules', 'schedules'])
-                ->orderBy('id', 'desc')
-                ->get();
-
-    if ($vehicles->isEmpty()) {
-        \Log::error('GEEN VOERTUIGEN GEVONDEN - Database:', [
-            'tables' => \DB::select('SHOW TABLES'),
-            'vehicles_table' => \DB::select('DESCRIBE vehicles')
-        ]);
+        return view('planner.planning', compact('vehicles', 'scheduledEvents'));
     }
 
-    return view('planner.completed', [
-        'vehicles' => $vehicles,
-        'statusColors' => [
-            'concept' => 'bg-gray-100 text-gray-800',
-            'in_productie' => 'bg-yellow-100 text-yellow-800',
-            'voltooid' => 'bg-green-100 text-green-800'
-        ]
-    ]);
-}
-    
+    /**
+     * Toon de voltooide voertuigen met hun verwachte opleverdatum.
+     */
+    public function completed()
+    {
+        $vehicles = Vehicle::where('status', 'voltooid')
+            ->with('customer')
+            ->get();
+
+        foreach ($vehicles as $vehicle) {
+            $maxEndTime = Schedule::where('vehicle_id', $vehicle->id)->max('end_time');
+            $vehicle->expected_delivery = $maxEndTime;
+        }
+
+        return view('planner.completed', compact('vehicles'));
+    }
+
+    /**
+     * Toon alle voertuigen, ongeacht status, met aanvullende statuskleuren.
+     */
+    public function completedVehicles()
+    {
+        $vehicles = Vehicle::withoutGlobalScopes()
+                    ->with(['customer', 'modules', 'schedules'])
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+        if ($vehicles->isEmpty()) {
+            \Log::error('GEEN VOERTUIGEN GEVONDEN - Database:', [
+                'tables' => \DB::select('SHOW TABLES'),
+                'vehicles_table' => \DB::select('DESCRIBE vehicles')
+            ]);
+        }
+
+        return view('planner.completed', [
+            'vehicles' => $vehicles,
+            'statusColors' => [
+                'concept' => 'bg-gray-100 text-gray-800',
+                'in_productie' => 'bg-yellow-100 text-yellow-800',
+                'voltooid' => 'bg-green-100 text-green-800'
+            ]
+        ]);
+    }
 }

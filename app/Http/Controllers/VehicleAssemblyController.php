@@ -131,19 +131,10 @@ class VehicleAssemblyController extends Controller
      */
     private function planVehicleAssembly(Vehicle $vehicle, $modules)
     {
-        $startTime = Carbon::now(); // Stel het starttijdstip in
-        $currentTime = $startTime;
-
-        // Loop door de modules en wijs tijdsloten toe
-        foreach ($modules as $module) {
-            $endTime = $currentTime->copy()->addHours($module->assembly_time); // Bereken eindtijd
-            Schedule::create([
-                'vehicle_id' => $vehicle->id,
-                'module_id' => $module->id,
-                'start_time' => $currentTime,
-                'end_time' => $endTime,
-            ]);
-            $currentTime = $endTime; // Zet de volgende starttijd gelijk aan de vorige eindtijd
-        }
+        // Automatische planning uitgeschakeld.
+        return;
     }
+
+    
+    
 }

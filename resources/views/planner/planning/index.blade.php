@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 @section('content')
 <div class="container mx-auto p-4">
@@ -81,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const formErrors = document.getElementById('formErrors');
     const planningForm = document.getElementById('planningForm');
 
-    let selectedSlotDate = null;
     let tempEvent = null;
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
         locale: 'nl',
+        timeZone: 'local',
         initialView: 'timeGridWeek',
         slotDuration: '02:00:00',
         slotMinTime: '08:00:00',
@@ -101,8 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         select(info) {
-            selectedSlotDate = info.start;
-
             if (tempEvent) {
                 calendar.getEventById('temp')?.remove();
             }
@@ -110,16 +108,17 @@ document.addEventListener('DOMContentLoaded', function () {
             tempEvent = calendar.addEvent({
                 id: 'temp',
                 title: 'Geselecteerd tijdslot',
-                start: info.start,
-                end: info.end,
+                start: info.startStr,
+                end: info.endStr,
                 backgroundColor: '#93c5fd',
                 borderColor: '#3b82f6',
                 textColor: '#000',
                 display: 'auto'
             });
 
-            document.getElementById('selectedSlot').value = selectedSlotDate.toISOString();
-            selectedTimeDisplay.textContent = `Geselecteerd: ${selectedSlotDate.toLocaleString('nl-NL', {
+            document.getElementById('selectedSlot').value = info.startStr;
+            const selectedDate = new Date(info.startStr);
+            selectedTimeDisplay.textContent = `Geselecteerd: ${selectedDate.toLocaleString('nl-NL', {
                 dateStyle: 'short',
                 timeStyle: 'short'
             })}`;
@@ -145,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
     planningForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        if (!selectedSlotDate) {
+        if (!document.getElementById('selectedSlot').value) {
             showFormMessage('Kies eerst een tijdslot.', false);
             return;
         }

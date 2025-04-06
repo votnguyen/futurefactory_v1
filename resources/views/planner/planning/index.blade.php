@@ -30,7 +30,7 @@
                     <select name="vehicle_id" class="w-full p-2 border rounded" required>
                         <option value="">-- Kies een voertuig --</option>
                         @foreach($vehicles as $vehicle)
-                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }} data-vehicle-name="{{ $vehicle->name }}">
+                            <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
                                 {{ $vehicle->name }} ({{ $vehicle->customer->name }})
                             </option>
                         @endforeach
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="bg-blue-500 text-black px-4 py-2 rounded w-full">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">
                     Inplannen
                 </button>
             </form>
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editable: false,
         events: function(info, successCallback, failureCallback) {
             // Haal de geplande evenementen op via een AJAX-aanroep
-            fetch('/get-scheduled-events') // Dit is een voorbeeldroute
+            fetch('/get-scheduled-events')
                 .then(response => response.json())
                 .then(data => successCallback(data.events))
                 .catch(error => failureCallback(error));
@@ -171,14 +171,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     tempEvent = null;
                 }
 
+                // Update de kalender zodat het ingeplande tijdslot nu permanent zichtbaar is
                 calendar.refetchEvents();
 
-                // Verwijder het geselecteerde voertuig uit de dropdownlijst
+                // BEHOUD: Het voertuig blijft in de dropdown
+                // Verwijder de ingeplande modules uit de lijst voor het geselecteerde voertuig
                 const vehicleId = formData.get('vehicle_id');
-                document.querySelector(`option[value="${vehicleId}"]`).remove();
+                const checkedModules = document.querySelectorAll(`#vehicle-${vehicleId} input[type="checkbox"]:checked`);
+                checkedModules.forEach(cb => {
+                    // Verwijder de hele label zodat de module niet meer zichtbaar is
+                    cb.closest('label').remove();
+                });
 
-                // Reset formulier en UI-elementen
-                this.reset();
+                // Reset alleen de tijdslot-selectie (niet het hele formulier)
+                document.getElementById('selectedSlot').value = '';
                 selectedTimeDisplay.textContent = '';
             } else {
                 if (data.errors) {
